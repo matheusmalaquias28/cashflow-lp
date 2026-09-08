@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import clsx from "clsx";
-import { CheckCircle2, Plus, Sparkles, Gem, Flame, Crown } from "lucide-react";
+import { CheckCircle2, XCircle, ArrowUp, Plus, Sparkles, Gem, Flame, Crown } from "lucide-react";
 import * as PricingCard from "../ui/pricing-card";
 import { InteractiveTiltCard } from "../ui/tilt-card";
 import { Button, Container, Eyebrow, Logo, Reveal, Section, SectionHeader, SplitWords } from "../ui/primitives";
@@ -87,7 +87,7 @@ function ManifestoFallback() {
 
 export function Pricing() {
   return (
-    <Section id="planos" className="!pt-0">
+    <Section id="planos">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
@@ -103,6 +103,9 @@ export function Pricing() {
         <div className="mt-16 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {PLANS.map((p, i) => {
             const Icon = PLAN_ICONS[p.id];
+            // Quanto o limite de vendas cresce em relação ao plano anterior.
+            const prev = PLANS[i - 1];
+            const salesJump = prev ? Math.round((p.salesLimit / prev.salesLimit - 1) * 100) : null;
             return (
               <Reveal key={p.id} delay={i * 0.08} amount={0.15} className="h-full">
                 <PricingCard.Card
@@ -128,10 +131,10 @@ export function Pricing() {
 
                     <PricingCard.Description className="mb-4 min-h-[32px]">{p.tagline}</PricingCard.Description>
 
+                    <PricingCard.OriginalPrice>R$ {p.monthly}</PricingCard.OriginalPrice>
                     <PricingCard.Price>
                       <span className="pb-1 font-mono text-sm text-fg-3">R$</span>
                       <PricingCard.MainPrice>{p.firstPrice}</PricingCard.MainPrice>
-                      <PricingCard.OriginalPrice>R$ {p.monthly}</PricingCard.OriginalPrice>
                     </PricingCard.Price>
                     <PricingCard.Description className="mb-5">
                       1º pagamento · depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
@@ -151,13 +154,28 @@ export function Pricing() {
 
                   <PricingCard.Body>
                     <PricingCard.List>
+                      <PricingCard.ListItem>
+                        <CheckCircle2 aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-green" />
+                        <span className="flex flex-wrap items-center gap-x-1.5">
+                          Até {p.salesLimit.toLocaleString("pt-BR")} vendas/mês
+                          {salesJump !== null && (
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-green/15 px-1.5 py-0.5 font-mono text-[10px] tabular text-green">
+                              <ArrowUp aria-hidden className="h-2.5 w-2.5" />
+                              {salesJump}%
+                            </span>
+                          )}
+                        </span>
+                      </PricingCard.ListItem>
                       {p.features.map((f) => (
                         <PricingCard.ListItem key={f}>
-                          <CheckCircle2
-                            aria-hidden
-                            className={clsx("mt-0.5 h-4 w-4 shrink-0", p.highlight ? "text-red" : "text-green")}
-                          />
+                          <CheckCircle2 aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-green" />
                           <span className={f.includes("VIP") ? "text-fg" : undefined}>{f}</span>
+                        </PricingCard.ListItem>
+                      ))}
+                      {p.lockedFeatures?.map((f) => (
+                        <PricingCard.ListItem key={f} className="opacity-45">
+                          <XCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-fg-3" />
+                          <span className="line-through">{f}</span>
                         </PricingCard.ListItem>
                       ))}
                     </PricingCard.List>

@@ -159,7 +159,7 @@ export function Dashboard({ className, live = true }: { className?: string; live
                 </span>
               </div>
             </div>
-            <AreaChart id="hero-chart" data={CHART} data2={CHART_PREV} width={600} height={190} className="mt-auto" />
+            <AreaChart id="hero-chart" data={CHART} data2={CHART_PREV} width={600} height={190} className="mt-auto" grow delay={1.1} />
           </div>
 
           {/* Live feed */}

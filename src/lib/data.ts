@@ -28,7 +28,11 @@ export type Plan = {
   tagline: string;
   firstPrice: string;
   monthly: string;
+  /** Vendas/mês incluídas — usado para mostrar o salto entre planos. */
+  salesLimit: number;
   features: string[];
+  /** Recursos que este plano NÃO tem, listados tachados. */
+  lockedFeatures?: string[];
   extraSale: string;
   highlight?: boolean;
   href: string;
@@ -43,8 +47,8 @@ export const PLANS: Plan[] = [
     tagline: "Para começar a organizar sua operação.",
     firstPrice: "87,30",
     monthly: "97",
+    salesLimit: 1500,
     features: [
-      "Até 1.500 vendas/mês",
       "3 contas de anúncios",
       "3 Meta Pixels",
       "1 operação",
@@ -52,6 +56,7 @@ export const PLANS: Plan[] = [
       "Webhooks ilimitados",
       "Tracking avançado",
     ],
+    lockedFeatures: ["Suporte VIP"],
     extraSale: "R$ 0,10 por venda adicional",
     href: env("NEXT_PUBLIC_CHECKOUT_GOLD") ?? "#",
   },
@@ -61,8 +66,8 @@ export const PLANS: Plan[] = [
     tagline: "Para quem já opera múltiplas ofertas.",
     firstPrice: "167,45",
     monthly: "197",
+    salesLimit: 3000,
     features: [
-      "Até 3.000 vendas/mês",
       "10 contas de anúncios",
       "10 Meta Pixels",
       "2 operações",
@@ -81,8 +86,8 @@ export const PLANS: Plan[] = [
     tagline: "Para operações em escala.",
     firstPrice: "237,60",
     monthly: "297",
+    salesLimit: 5000,
     features: [
-      "Até 5.000 vendas/mês",
       "Contas de anúncios ilimitadas",
       "Meta Pixels ilimitados",
       "5 operações",
@@ -100,8 +105,8 @@ export const PLANS: Plan[] = [
     tagline: "Para operações maiores e múltiplas estruturas.",
     firstPrice: "347,90",
     monthly: "497",
+    salesLimit: 8000,
     features: [
-      "Até 8.000 vendas/mês",
       "Contas de anúncios ilimitadas",
       "Meta Pixels ilimitados",
       "10 operações",

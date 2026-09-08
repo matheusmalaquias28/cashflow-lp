@@ -168,13 +168,29 @@ body {
   }
 }
 
-/* Pixel-dot arrow inside the CTA button */
-@keyframes dot-wave {
+/* Dot wave inside the CTA button's accent block */
+@keyframes bd-dot-wave {
   0%,
+  70%,
   100% {
-    opacity: 0.18;
+    opacity: 0.25;
+    transform: scale(0.85);
   }
-  50% {
+  35% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.bd-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bd-dot-wave 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-dot {
+    animation: none;
     opacity: 1;
   }
 }

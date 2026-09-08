@@ -79,6 +79,8 @@ export function AreaChart({
   id,
   draw = true,
   showGrid = true,
+  grow = false,
+  delay = 0,
 }: {
   data: number[];
   data2?: number[];
@@ -90,6 +92,9 @@ export function AreaChart({
   id: string;
   draw?: boolean;
   showGrid?: boolean;
+  /** Rises from the baseline while the curve draws — used on the hero chart. */
+  grow?: boolean;
+  delay?: number;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
@@ -108,6 +113,11 @@ export function AreaChart({
   const pts2 = useMemo(() => (data2 ? toPts(data2) : null), [data2]); // eslint-disable-line react-hooks/exhaustive-deps
   const line = smoothPath(pts);
   const area = `${line} L ${pts[pts.length - 1][0]} ${height} L ${pts[0][0]} ${height} Z`;
+  const head = pts[pts.length - 1];
+  const drawMs = 1.8;
+  // `grow` is the hero's load animation: it plays on mount, since the chart
+  // starts just below the fold and would otherwise wait for a scroll.
+  const active = grow || inView;
 
   return (
     <svg ref={ref} viewBox={`0 0 ${width} ${height}`} className={clsx("w-full h-auto", className)} fill="none">
@@ -129,53 +139,65 @@ export function AreaChart({
             strokeDasharray="2 6"
           />
         ))}
-      <motion.path
-        d={area}
-        fill={`url(#${id}-fill)`}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 1.2, delay: 0.8 }}
-      />
-      {pts2 && (
+
+      <motion.g
+        style={grow ? { transformBox: "view-box", transformOrigin: `0px ${height}px` } : undefined}
+        initial={grow ? { scaleY: 0 } : false}
+        animate={grow ? { scaleY: 1 } : undefined}
+        transition={{ duration: 1.5, delay, ease: [0.16, 1, 0.3, 1] }}
+      >
         <motion.path
-          d={smoothPath(pts2)}
-          stroke={color2}
-          strokeWidth="1.5"
-          strokeDasharray="4 4"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={inView ? { pathLength: 1, opacity: 1 } : {}}
-          transition={{ duration: 1.8, ease: "easeInOut" }}
+          d={area}
+          fill={`url(#${id}-fill)`}
+          initial={{ opacity: 0 }}
+          animate={active ? { opacity: 1 } : {}}
+          transition={{ duration: 1.2, delay: delay + 0.6 }}
         />
-      )}
-      <motion.path
-        d={line}
-        stroke={color}
-        strokeWidth="2.25"
-        strokeLinecap="round"
-        initial={{ pathLength: draw ? 0 : 1 }}
-        animate={inView ? { pathLength: 1 } : {}}
-        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-      />
+        {pts2 && (
+          <motion.path
+            d={smoothPath(pts2)}
+            stroke={color2}
+            strokeWidth="1.5"
+            strokeDasharray="4 4"
+            vectorEffect="non-scaling-stroke"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={active ? { pathLength: 1, opacity: 1 } : {}}
+            transition={{ duration: drawMs, delay, ease: "easeInOut" }}
+          />
+        )}
+        <motion.path
+          d={line}
+          stroke={color}
+          strokeWidth="2.25"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          initial={{ pathLength: draw ? 0 : 1 }}
+          animate={active ? { pathLength: 1 } : {}}
+          transition={{ duration: drawMs, delay, ease: [0.16, 1, 0.3, 1] }}
+        />
+      </motion.g>
+
+      {/* Head marker waits for the curve to finish so it never floats mid-air */}
       <motion.circle
-        cx={pts[pts.length - 1][0]}
-        cy={pts[pts.length - 1][1]}
+        cx={head[0]}
+        cy={head[1]}
         r="4"
         fill={color}
         initial={{ scale: 0, opacity: 0 }}
-        animate={inView ? { scale: 1, opacity: 1 } : {}}
-        transition={{ delay: 1.6, duration: 0.4 }}
-        style={{ transformOrigin: `${pts[pts.length - 1][0]}px ${pts[pts.length - 1][1]}px` }}
+        animate={active ? { scale: 1, opacity: 1 } : {}}
+        transition={{ delay: delay + drawMs - 0.2, duration: 0.4 }}
+        style={{ transformOrigin: `${head[0]}px ${head[1]}px` }}
       />
       <motion.circle
-        cx={pts[pts.length - 1][0]}
-        cy={pts[pts.length - 1][1]}
+        cx={head[0]}
+        cy={head[1]}
         r="4"
         fill={color}
         className="animate-pulse-dot"
-        style={{ transformOrigin: `${pts[pts.length - 1][0]}px ${pts[pts.length - 1][1]}px` }}
+        style={{ transformOrigin: `${head[0]}px ${head[1]}px` }}
         initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ delay: 1.8 }}
+        animate={active ? { opacity: 1 } : {}}
+        transition={{ delay: delay + drawMs }}
       />
     </svg>
   );

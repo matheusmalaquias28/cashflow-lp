@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { track } from "./MetaPixel";
 import { useImageOk } from "@/lib/use-image-ok";
+import { AntiMetalBlock } from "./anti-metal-button";
 
 /* ---------- Layout ---------- */
 
@@ -166,23 +167,10 @@ export function SectionHeader({
 
 /* ---------- Button ---------- */
 
-/** Pixel-dot arrow that pulses left → right toward the tip. */
-const DOTS = [
-  { cx: 1.8, cy: 10.6, d: 0 },
-  { cx: 6.2, cy: 10.6, d: 0.12 },
-  { cx: 10.6, cy: 1.8, d: 0.24 },
-  { cx: 10.6, cy: 10.6, d: 0.24 },
-  { cx: 10.6, cy: 19.4, d: 0.24 },
-  { cx: 15.0, cy: 6.2, d: 0.36 },
-  { cx: 15.0, cy: 10.6, d: 0.36 },
-  { cx: 15.0, cy: 15.0, d: 0.36 },
-  { cx: 19.4, cy: 10.6, d: 0.48 },
-];
-
 const SIZES = {
-  sm: { h: 44, text: "text-sm" },
-  md: { h: 54, text: "text-[15px]" },
-  lg: { h: 64, text: "text-base" },
+  sm: { h: 44, block: 36, text: "text-sm" },
+  md: { h: 52, block: 44, text: "text-[15px]" },
+  lg: { h: 60, block: 52, text: "text-base" },
 } as const;
 
 export function Button({
@@ -203,9 +191,7 @@ export function Button({
   eventParams?: Record<string, unknown>;
 }) {
   const external = href.startsWith("http");
-  const { h, text } = SIZES[size];
-  const iconW = h - 6;
-  const padLeft = iconW + 19;
+  const { h, block, text } = SIZES[size];
 
   return (
     <Link
@@ -213,41 +199,26 @@ export function Button({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       onClick={() => event && track(event, eventParams)}
-      style={{ height: h, paddingLeft: padLeft }}
+      style={{ height: h, paddingLeft: block + 18, paddingRight: 20 }}
       className={clsx(
-        "group relative inline-flex items-center whitespace-nowrap rounded-[13px] border pr-6 font-medium",
-        "transition-transform duration-300 ease-out-expo hover:-translate-y-0.5 active:translate-y-0",
+        "group/btn relative inline-flex items-center overflow-hidden rounded-xl border font-medium tracking-tight",
+        "transition-transform duration-200 active:scale-[0.98]",
         text,
-        variant === "primary" && "border-white/10 bg-[#111114] text-white shadow-[0_18px_40px_-18px_rgba(0,0,0,.9)]",
-        variant === "ghost" && "border-line-2 bg-white/[0.03] text-fg hover:bg-white/[0.06]",
-        variant === "white" && "border-black/10 bg-white text-black",
+        variant === "primary" &&
+          "border-white/[0.08] bg-[linear-gradient(180deg,#1a1a1a_0%,#0a0a0a_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_4px_12px_rgba(0,0,0,0.35)]",
+        variant === "ghost" &&
+          "border-line-2 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] text-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]",
+        variant === "white" && "border-black/10 bg-[linear-gradient(180deg,#ffffff_0%,#ededed_100%)] text-[#0a0a0a]",
         className,
       )}
     >
-      <span
-        aria-hidden
-        style={{ width: iconW }}
-        className={clsx(
-          "absolute inset-y-[3px] left-[3px] flex items-center justify-center rounded-[10px]",
-          variant === "ghost"
-            ? "bg-white/[0.09] shadow-[inset_0_0_8px_1px_rgba(255,255,255,.08)]"
-            : "bg-gradient-to-b from-[#FF3B44] to-[#FA0A15] shadow-[inset_0_0_8px_1px_rgba(255,150,155,.55),0_12px_20px_0_rgba(0,0,0,.3)]",
-        )}
-      >
-        <svg viewBox="0 0 21.2 21.2" className="h-[46%] w-auto overflow-visible" fill="none">
-          {DOTS.map((dot, i) => (
-            <circle
-              key={i}
-              cx={dot.cx}
-              cy={dot.cy}
-              r="1.7"
-              fill={variant === "ghost" ? "#ffffff" : "#6b0005"}
-              style={{ animation: `dot-wave 1.4s ease-in-out ${dot.d}s infinite` }}
-            />
-          ))}
-        </svg>
-      </span>
-      <span className="relative">{children}</span>
+      <span className="relative z-0">{children}</span>
+      <AntiMetalBlock
+        width={block}
+        accentFrom={variant === "ghost" ? "#3a3a3e" : "#FF3B44"}
+        accentTo={variant === "ghost" ? "#232326" : "#D40510"}
+        dotColor={variant === "ghost" ? "#ffffff" : "#5c0004"}
+      />
     </Link>
   );
 }

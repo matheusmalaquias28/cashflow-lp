@@ -81,8 +81,9 @@ export function Period({ className, ...props }: ComponentProps<"span">) {
   return <span className={clsx("pb-1 text-xs text-fg-3", className)} {...props} />;
 }
 
+/** Sits above the headline price, so the discount reads top-down. */
 export function OriginalPrice({ className, ...props }: ComponentProps<"span">) {
-  return <span className={clsx("ml-auto mr-1 font-mono text-base tabular text-fg-3 line-through", className)} {...props} />;
+  return <span className={clsx("block font-mono text-sm tabular text-fg-3 line-through", className)} {...props} />;
 }
 
 export function Body({ className, ...props }: ComponentProps<"div">) {
