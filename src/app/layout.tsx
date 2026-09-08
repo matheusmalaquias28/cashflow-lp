@@ -21,7 +21,7 @@ const geistMono = localFont({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cashflow.app.br";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cashflow.app.br";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -1,6 +1,16 @@
 export const CTA_PRIMARY_HREF = "#planos";
 
 /**
+ * Prova social da hero. `avatars` são caminhos em /public/avatars — enquanto
+ * não existirem, o componente mostra um avatar neutro de placeholder.
+ * Só troque o texto por uma recomendação quando ela for real.
+ */
+export const SOCIAL_PROOF = {
+  text: "Membros fundadores têm condições especiais de entrada.",
+  avatars: ["/avatars/1.jpg", "/avatars/2.jpg", "/avatars/3.jpg"],
+};
+
+/**
  * Ofertas fictícias usadas nos mockups de produto da página.
  * Trocar os nomes aqui atualiza todas as seções de uma vez.
  */

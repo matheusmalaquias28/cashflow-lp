@@ -3,10 +3,11 @@
 import { motion, useInView, type Variants } from "motion/react";
 import { useRef, type ReactNode } from "react";
 import clsx from "clsx";
-import { ArrowRight } from "lucide-react";
+import { User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { track } from "./MetaPixel";
+import { useImageOk } from "@/lib/use-image-ok";
 
 /* ---------- Layout ---------- */
 
@@ -165,6 +166,25 @@ export function SectionHeader({
 
 /* ---------- Button ---------- */
 
+/** Pixel-dot arrow that pulses left → right toward the tip. */
+const DOTS = [
+  { cx: 1.8, cy: 10.6, d: 0 },
+  { cx: 6.2, cy: 10.6, d: 0.12 },
+  { cx: 10.6, cy: 1.8, d: 0.24 },
+  { cx: 10.6, cy: 10.6, d: 0.24 },
+  { cx: 10.6, cy: 19.4, d: 0.24 },
+  { cx: 15.0, cy: 6.2, d: 0.36 },
+  { cx: 15.0, cy: 10.6, d: 0.36 },
+  { cx: 15.0, cy: 15.0, d: 0.36 },
+  { cx: 19.4, cy: 10.6, d: 0.48 },
+];
+
+const SIZES = {
+  sm: { h: 44, text: "text-sm" },
+  md: { h: 54, text: "text-[15px]" },
+  lg: { h: 64, text: "text-base" },
+} as const;
+
 export function Button({
   href,
   children,
@@ -177,33 +197,104 @@ export function Button({
   href: string;
   children: ReactNode;
   variant?: "primary" | "ghost" | "white";
-  size?: "md" | "lg";
+  size?: "sm" | "md" | "lg";
   className?: string;
   event?: string;
   eventParams?: Record<string, unknown>;
 }) {
   const external = href.startsWith("http");
+  const { h, text } = SIZES[size];
+  const iconW = h - 6;
+  const padLeft = iconW + 19;
+
   return (
     <Link
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       onClick={() => event && track(event, eventParams)}
+      style={{ height: h, paddingLeft: padLeft }}
       className={clsx(
-        "group relative inline-flex items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-full font-semibold transition-transform duration-300 ease-out-expo active:scale-[0.98]",
-        size === "md" ? "h-12 px-6 text-[15px]" : "h-14 px-8 text-base",
-        variant === "primary" && "bg-red text-white shadow-[0_0_0_1px_rgba(250,10,21,.6),0_12px_40px_-12px_rgba(250,10,21,.7)] hover:shadow-[0_0_0_1px_rgba(250,10,21,.8),0_16px_50px_-10px_rgba(250,10,21,.85)]",
-        variant === "ghost" && "border border-line-2 bg-white/[0.03] text-fg hover:bg-white/[0.07]",
-        variant === "white" && "bg-white text-black hover:bg-white/90",
+        "group relative inline-flex items-center whitespace-nowrap rounded-[13px] border pr-6 font-medium",
+        "transition-transform duration-300 ease-out-expo hover:-translate-y-0.5 active:translate-y-0",
+        text,
+        variant === "primary" && "border-white/10 bg-[#111114] text-white shadow-[0_18px_40px_-18px_rgba(0,0,0,.9)]",
+        variant === "ghost" && "border-line-2 bg-white/[0.03] text-fg hover:bg-white/[0.06]",
+        variant === "white" && "border-black/10 bg-white text-black",
         className,
       )}
     >
-      {variant === "primary" && (
-        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out-expo group-hover:translate-x-full" />
-      )}
+      <span
+        aria-hidden
+        style={{ width: iconW }}
+        className={clsx(
+          "absolute inset-y-[3px] left-[3px] flex items-center justify-center rounded-[10px]",
+          variant === "ghost"
+            ? "bg-white/[0.09] shadow-[inset_0_0_8px_1px_rgba(255,255,255,.08)]"
+            : "bg-gradient-to-b from-[#FF3B44] to-[#FA0A15] shadow-[inset_0_0_8px_1px_rgba(255,150,155,.55),0_12px_20px_0_rgba(0,0,0,.3)]",
+        )}
+      >
+        <svg viewBox="0 0 21.2 21.2" className="h-[46%] w-auto overflow-visible" fill="none">
+          {DOTS.map((dot, i) => (
+            <circle
+              key={i}
+              cx={dot.cx}
+              cy={dot.cy}
+              r="1.7"
+              fill={variant === "ghost" ? "#ffffff" : "#6b0005"}
+              style={{ animation: `dot-wave 1.4s ease-in-out ${dot.d}s infinite` }}
+            />
+          ))}
+        </svg>
+      </span>
       <span className="relative">{children}</span>
-      <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
     </Link>
+  );
+}
+
+/* ---------- Social proof ---------- */
+
+/**
+ * Overlapping avatars beside a short line. Hovering one slides it aside so the
+ * face underneath shows. Missing files fall back to a neutral placeholder —
+ * drop real photos in /public/avatars before publishing a recommendation claim.
+ */
+export function SocialProof({
+  text,
+  avatars = [],
+  className,
+}: {
+  text: string;
+  avatars?: string[];
+  className?: string;
+}) {
+  const list = avatars.length ? avatars : [null, null, null];
+  return (
+    <div className={clsx("flex items-center justify-center gap-3.5", className)}>
+      <div className="flex pl-3">
+        {list.map((src, i) => (
+          <Avatar key={i} src={src} z={list.length - i} />
+        ))}
+      </div>
+      <p className="max-w-[15rem] text-left text-sm leading-snug text-fg-2">{text}</p>
+    </div>
+  );
+}
+
+function Avatar({ src, z }: { src: string | null; z: number }) {
+  const ok = useImageOk(src);
+  return (
+    <span
+      style={{ zIndex: z }}
+      className="relative -ml-3 flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-white/[0.18] to-white/[0.05] ring-2 ring-white/15 transition-transform duration-500 ease-out-expo hover:-translate-x-3"
+    >
+      {ok && src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt="" className="h-full w-full object-cover" draggable={false} />
+      ) : (
+        <User className="h-5 w-5 text-white/45" />
+      )}
+    </span>
   );
 }
 

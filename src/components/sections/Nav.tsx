@@ -50,7 +50,7 @@ export function Nav() {
             </a>
           ))}
         </nav>
-        <Button href={CTA_PRIMARY_HREF} className="!h-10 !px-5 !text-sm">
+        <Button href={CTA_PRIMARY_HREF} size="sm" className="!pr-5">
           Quero conhecer
         </Button>
       </div>

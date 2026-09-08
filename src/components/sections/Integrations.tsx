@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { Container, Reveal, Section, SectionHeader } from "../ui/primitives";
 import { INTEGRATIONS, LOGOS } from "@/lib/data";
 import { PLATFORM_COLORS } from "../mock/atoms";
+import { useImageOk } from "@/lib/use-image-ok";
 
 /**
  * Brand mark. Uses the official logo from /public/integrations when available
@@ -15,7 +16,8 @@ export function BrandMark({ name, size = "md" }: { name: string; size?: "md" | "
   const file = LOGOS[name];
   const color = PLATFORM_COLORS[name] ?? "#fff";
   const h = size === "lg" ? "h-8 w-[128px]" : "h-7 w-[112px]";
-  if (file) {
+  const ok = useImageOk(file ? `/integrations/${file}.png` : null);
+  if (file && ok) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img

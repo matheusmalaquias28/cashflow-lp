@@ -167,3 +167,14 @@ body {
     opacity: 0;
   }
 }
+
+/* Pixel-dot arrow inside the CTA button */
+@keyframes dot-wave {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 1;
+  }
+}

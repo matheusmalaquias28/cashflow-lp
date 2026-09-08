@@ -2,10 +2,10 @@
 
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef } from "react";
-import { Button, Container, Eyebrow, SplitWords } from "../ui/primitives";
+import { Button, Container, Eyebrow, SocialProof, SplitWords } from "../ui/primitives";
 import { Dashboard } from "../mock/Dashboard";
 import { ScaledFrame } from "../mock/ScaledFrame";
-import { CTA_PRIMARY_HREF, INTEGRATIONS } from "@/lib/data";
+import { CTA_PRIMARY_HREF, INTEGRATIONS, SOCIAL_PROOF } from "@/lib/data";
 import { BrandMark } from "./Integrations";
 import { Velaris } from "../ui/velaris";
 
@@ -40,12 +40,8 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="mx-auto inline-flex items-center gap-3 rounded-full border border-line-2 bg-white/[0.03] py-1.5 pl-2 pr-4 text-xs text-fg-2 backdrop-blur"
         >
-          <span className="rounded-full bg-red px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-white">
-            Fundadores
-          </span>
-          Membros fundadores têm condições especiais de entrada.
+          <SocialProof text={SOCIAL_PROOF.text} avatars={SOCIAL_PROOF.avatars} />
         </motion.div>
 
         <SplitWords
