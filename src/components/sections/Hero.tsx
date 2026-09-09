@@ -64,14 +64,14 @@ export function Hero() {
           as="h1"
           text="Sua operação de Lowticket. // *Sob *controle."
           delay={0.4}
-          className="display mt-6 max-w-5xl text-balance text-[2.75rem] sm:mt-8 sm:text-6xl md:text-7xl lg:text-[5.5rem]"
+          className="display mt-6 max-w-5xl text-balance text-[40px] sm:mt-8 sm:text-6xl md:text-7xl lg:text-[5.5rem]"
         />
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 max-w-2xl text-balance text-base leading-relaxed text-fg-2 sm:mt-7 sm:text-lg md:text-xl"
+          className="mt-5 max-w-2xl text-balance text-sm leading-relaxed text-fg-2 sm:mt-7 sm:text-lg md:text-xl"
         >
           <span className="text-fg">Vendas, tráfego, ofertas e financeiro em um único lugar.</span> Tenha uma visão
           clara do que está acontecendo em cada oferta e tome decisões com dados reais, sem depender de
