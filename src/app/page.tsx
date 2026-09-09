@@ -8,6 +8,7 @@ import { Waterfall, Ledger, Commitments } from "@/components/sections/Finance";
 import { Integrations } from "@/components/sections/Integrations";
 import { Manifesto, Pricing, Faq, FinalCta, Footer } from "@/components/sections/Closing";
 import { Features } from "@/components/sections/Features";
+import { LampGlow } from "@/components/ui/lamp";
 
 export default function Page() {
   return (
@@ -26,6 +27,7 @@ export default function Page() {
       <Integrations />
       <Features />
       <Manifesto />
+      <LampGlow />
       <Pricing />
       <Faq />
       <FinalCta />

@@ -283,8 +283,8 @@ export function BentoCard({
   const my = useMotionValue(-400);
   const sx = useSpring(mx, { stiffness: 200, damping: 28 });
   const sy = useSpring(my, { stiffness: 200, damping: 28 });
-  const spotlight = useMotionTemplate`radial-gradient(340px circle at ${sx}px ${sy}px, rgba(250,10,21,0.14), transparent 65%)`;
-  const edge = useMotionTemplate`radial-gradient(400px circle at ${sx}px ${sy}px, rgba(250,10,21,0.5), transparent 60%)`;
+  const spotlight = useMotionTemplate`radial-gradient(340px circle at ${sx}px ${sy}px, rgba(250,10,21,0.07), transparent 65%)`;
+  const edge = useMotionTemplate`radial-gradient(400px circle at ${sx}px ${sy}px, rgba(250,10,21,0.26), transparent 60%)`;
   const green = accent && tone === "green";
 
   return (
@@ -352,7 +352,7 @@ export function BentoCard({
 
         <div className={clsx("relative flex-1 overflow-hidden p-4 sm:p-5", mediaClassName)}>{children}</div>
 
-        <div className="relative border-t border-white/[0.07] bg-black/20 p-5">
+        <div className="relative z-10 border-t border-white/[0.07] bg-[#08080a] p-5">
           <div className="flex items-center gap-2.5">
             <span
               className={clsx(

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Button, Container, Eyebrow, SocialProof, SplitWords } from "../ui/primitives";
+import { Button, Container, Eyebrow, Logo, SocialProof, SplitWords } from "../ui/primitives";
 import { CTA_PRIMARY_HREF, INTEGRATIONS, SOCIAL_PROOF } from "@/lib/data";
 import { BrandMark } from "./Integrations";
 import { Velaris } from "../ui/velaris";
@@ -10,19 +10,20 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       {/* Hero — 100vh no mobile, conteúdo no topo e vídeo na parte inferior */}
-      <div className="relative flex min-h-[120svh] flex-col overflow-hidden pt-24 sm:block sm:min-h-0 sm:pt-40">
+      <div className="relative flex min-h-[120svh] flex-col overflow-hidden pt-[15px] sm:block sm:min-h-0 sm:pt-40 min-[1921px]:flex! min-[1921px]:min-h-screen! min-[1921px]:flex-col! min-[1921px]:justify-center! min-[1921px]:pt-0!">
       {/* Backdrop */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        {/* Cor de fundo atrás do vídeo (mobile #020101, desktop #020300) */}
+        <div className="absolute inset-0 bg-[#020101] sm:bg-[#020300]" />
         <Velaris
           height="100%"
-          bg="#050505"
-          colors={["#1c0002", "#5c0004", "#090001", "#050505"]}
+          bg="#130505"
+          colors={["#1c0002", "#5c0004", "#090001", "#130505"]}
           speed={0.55}
           grain={0.18}
-          className="absolute inset-x-0 top-0 h-[105vh] opacity-70 [mask-image:radial-gradient(120%_85%_at_50%_10%,black_0%,black_35%,transparent_78%)]"
+          className="absolute inset-x-0 top-0 hidden h-[105vh] opacity-70 sm:block [mask-image:radial-gradient(120%_85%_at_50%_10%,black_0%,black_35%,transparent_78%)]"
         />
         <div className="absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]" />
-        <div className="absolute left-1/2 top-[-14%] h-[62vh] w-[120vw] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(131,0,6,.4),transparent_68%)] blur-3xl" />
         {/* Vídeo mobile — fundo (retrato), ancorado à parte inferior da hero */}
         <video
           className="absolute inset-0 h-full w-full object-contain object-bottom sm:hidden"
@@ -35,7 +36,7 @@ export function Hero() {
         />
         {/* Vídeo desktop */}
         <video
-          className="absolute inset-y-0 right-0 hidden h-full w-full bg-[#050303] object-contain object-right [clip-path:inset(0_4px)] sm:block"
+          className="absolute inset-y-0 right-0 hidden h-full w-full bg-[#020300] object-contain object-right [clip-path:inset(0_4px)] sm:block"
           src="/video/video-bg-desktop-cashflow.mp4"
           autoPlay
           loop
@@ -44,10 +45,13 @@ export function Hero() {
           preload="auto"
         />
         {/* Mescla a borda esquerda do vídeo com o fundo preto da hero (desktop) */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent lg:block" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-[#020300] via-[#020300]/80 to-transparent lg:block" />
       </div>
 
       <div className="relative w-full px-6 text-center sm:px-10 sm:text-left lg:pl-[100px] lg:pr-8">
+        {/* Logo no topo da hero — só no mobile (o nav fixo fica oculto) */}
+        <Logo className="mx-auto mb-7 h-7 sm:hidden" />
+
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}

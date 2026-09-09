@@ -26,7 +26,7 @@ export function Nav() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
       className={clsx(
-        "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-500 ease-out-expo",
+        "fixed inset-x-0 top-0 z-50 hidden border-b transition-colors duration-500 ease-out-expo sm:block",
         scrolled
           ? "border-line bg-[#0a0a0b]/80 backdrop-blur-xl"
           : "border-transparent bg-transparent",

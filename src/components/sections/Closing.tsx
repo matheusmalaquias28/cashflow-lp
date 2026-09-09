@@ -85,9 +85,167 @@ function ManifestoFallback() {
    Planos
    ===================================================================== */
 
-export function Pricing() {
+type Plan = (typeof PLANS)[number];
+
+function salesJumpFor(p: Plan) {
+  const idx = PLANS.indexOf(p);
+  const prev = PLANS[idx - 1];
+  return prev ? Math.round((p.salesLimit / prev.salesLimit - 1) * 100) : null;
+}
+
+function PlanFeatureItems({ p, salesJump }: { p: Plan; salesJump: number | null }) {
   return (
-    <Section id="planos">
+    <>
+      <PricingCard.ListItem>
+        <CheckCircle2 aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-green" />
+        <span className="flex flex-wrap items-center gap-x-1.5">
+          Até {p.salesLimit.toLocaleString("pt-BR")} vendas/mês
+          {salesJump !== null && (
+            <span className="inline-flex items-center gap-0.5 rounded-full bg-green/15 px-1.5 py-0.5 font-mono text-[10px] tabular text-green">
+              <ArrowUp aria-hidden className="h-2.5 w-2.5" />
+              {salesJump}%
+            </span>
+          )}
+        </span>
+      </PricingCard.ListItem>
+      {p.features.map((f) => (
+        <PricingCard.ListItem key={f}>
+          <CheckCircle2 aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-green" />
+          <span className={f.includes("VIP") ? "text-fg" : undefined}>{f}</span>
+        </PricingCard.ListItem>
+      ))}
+      {p.lockedFeatures?.map((f) => (
+        <PricingCard.ListItem key={f} className="opacity-45">
+          <XCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-fg-3" />
+          <span className="line-through">{f}</span>
+        </PricingCard.ListItem>
+      ))}
+    </>
+  );
+}
+
+function PlanCard({ p }: { p: Plan }) {
+  const Icon = PLAN_ICONS[p.id];
+  const salesJump = salesJumpFor(p);
+  return (
+    <PricingCard.Card
+      className={clsx(
+        "h-full transition-transform duration-500 ease-out-expo hover:-translate-y-1",
+        p.highlight && "border-red/45 bg-red/[0.05] shadow-[0_0_0_1px_rgba(250,10,21,.25),0_30px_90px_-40px_rgba(250,10,21,.7)]",
+      )}
+    >
+      {p.highlight && (
+        <div className="pointer-events-none absolute -top-px left-1/2 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-red to-transparent" />
+      )}
+
+      <PricingCard.Header className={clsx(p.highlight && "border-red/25 bg-[#17090b]")}>
+        <PricingCard.Plan>
+          <PricingCard.PlanName className={clsx(p.highlight && "text-red")}>
+            <Icon className="h-4 w-4" />
+            {p.name}
+          </PricingCard.PlanName>
+          {p.highlight && (
+            <PricingCard.Badge className="border-green bg-green/60 text-green">Mais escolhido</PricingCard.Badge>
+          )}
+        </PricingCard.Plan>
+
+        <PricingCard.Description className="mb-4 min-h-[32px]">{p.tagline}</PricingCard.Description>
+
+        <PricingCard.OriginalPrice>R$ {p.monthly}</PricingCard.OriginalPrice>
+        <PricingCard.Price>
+          <span className="pb-1 font-mono text-sm text-fg-3">R$</span>
+          <PricingCard.MainPrice>{p.firstPrice}</PricingCard.MainPrice>
+          <PricingCard.Period>/1º pagamento</PricingCard.Period>
+        </PricingCard.Price>
+        <PricingCard.Description className="mb-5">
+          depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
+        </PricingCard.Description>
+
+        <Button
+          href={p.href}
+          variant={p.highlight ? "primary" : "ghost"}
+          size="sm"
+          className="w-full justify-start !whitespace-normal !pr-4 text-[13px] leading-tight"
+          event="InitiateCheckout"
+          eventParams={{ content_name: p.name, value: Number(p.firstPrice.replace(",", ".")), currency: "BRL" }}
+        >
+          Quero ser membro fundador
+        </Button>
+      </PricingCard.Header>
+
+      <PricingCard.Body>
+        <PricingCard.List>
+          <PlanFeatureItems p={p} salesJump={salesJump} />
+        </PricingCard.List>
+
+        <PricingCard.Separator className="mt-auto" />
+
+        <p className="-mt-1 font-mono text-[11px] text-fg-3">{p.extraSale}</p>
+      </PricingCard.Body>
+    </PricingCard.Card>
+  );
+}
+
+function MasterCard({ p }: { p: Plan }) {
+  const Icon = PLAN_ICONS[p.id];
+  const salesJump = salesJumpFor(p);
+  return (
+    <PricingCard.Card className="transition-transform duration-500 ease-out-expo hover:-translate-y-1">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        <PricingCard.Header className="mb-0! flex flex-col lg:w-[340px] lg:shrink-0">
+          <PricingCard.Plan>
+            <PricingCard.PlanName>
+              <Icon className="h-4 w-4" />
+              {p.name}
+            </PricingCard.PlanName>
+          </PricingCard.Plan>
+
+          <PricingCard.Description className="mb-4 min-h-[32px]">{p.tagline}</PricingCard.Description>
+
+          <PricingCard.OriginalPrice>R$ {p.monthly}</PricingCard.OriginalPrice>
+          <PricingCard.Price>
+            <span className="pb-1 font-mono text-sm text-fg-3">R$</span>
+            <PricingCard.MainPrice>{p.firstPrice}</PricingCard.MainPrice>
+            <PricingCard.Period>/1º pagamento</PricingCard.Period>
+          </PricingCard.Price>
+          <PricingCard.Description className="mb-5">
+            depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
+          </PricingCard.Description>
+
+          <Button
+            href={p.href}
+            variant="ghost"
+            size="sm"
+            className="mt-auto w-full justify-start !whitespace-normal !pr-4 text-[13px] leading-tight"
+            event="InitiateCheckout"
+            eventParams={{ content_name: p.name, value: Number(p.firstPrice.replace(",", ".")), currency: "BRL" }}
+          >
+            Quero ser membro fundador
+          </Button>
+        </PricingCard.Header>
+
+        <PricingCard.Body className="lg:flex-1">
+          <div className="flex flex-1 items-center">
+            <ul className="grid w-full grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-3">
+              <PlanFeatureItems p={p} salesJump={salesJump} />
+            </ul>
+          </div>
+
+          <PricingCard.Separator />
+
+          <p className="-mt-1 font-mono text-[11px] text-fg-3">{p.extraSale}</p>
+        </PricingCard.Body>
+      </div>
+    </PricingCard.Card>
+  );
+}
+
+export function Pricing() {
+  const top = PLANS.filter((p) => p.id !== "master");
+  const master = PLANS.find((p) => p.id === "master");
+
+  return (
+    <Section id="planos" className="!pt-0">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
@@ -100,95 +258,19 @@ export function Pricing() {
       <Container>
         <SectionHeader eyebrow="Planos" title="Escolha o plano da sua *operação." lead="Membros fundadores têm condições especiais de entrada." />
 
-        <div className="mt-16 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {PLANS.map((p, i) => {
-            const Icon = PLAN_ICONS[p.id];
-            // Quanto o limite de vendas cresce em relação ao plano anterior.
-            const prev = PLANS[i - 1];
-            const salesJump = prev ? Math.round((p.salesLimit / prev.salesLimit - 1) * 100) : null;
-            return (
-              <Reveal key={p.id} delay={i * 0.08} amount={0.15} className="h-full">
-                <PricingCard.Card
-                  className={clsx(
-                    "transition-transform duration-500 ease-out-expo hover:-translate-y-1",
-                    p.highlight && "border-red/45 bg-red/[0.05] shadow-[0_0_0_1px_rgba(250,10,21,.25),0_30px_90px_-40px_rgba(250,10,21,.7)]",
-                  )}
-                >
-                  {p.highlight && (
-                    <div className="pointer-events-none absolute -top-px left-1/2 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-red to-transparent" />
-                  )}
-
-                  <PricingCard.Header className={clsx(p.highlight && "border-red/25 bg-red/[0.07]")}>
-                    <PricingCard.Plan>
-                      <PricingCard.PlanName className={clsx(p.highlight && "text-red")}>
-                        <Icon className="h-4 w-4" />
-                        {p.name}
-                      </PricingCard.PlanName>
-                      {p.highlight && (
-                        <PricingCard.Badge className="border-red/50 bg-red text-white">Mais escolhido</PricingCard.Badge>
-                      )}
-                    </PricingCard.Plan>
-
-                    <PricingCard.Description className="mb-4 min-h-[32px]">{p.tagline}</PricingCard.Description>
-
-                    <PricingCard.OriginalPrice>R$ {p.monthly}</PricingCard.OriginalPrice>
-                    <PricingCard.Price>
-                      <span className="pb-1 font-mono text-sm text-fg-3">R$</span>
-                      <PricingCard.MainPrice>{p.firstPrice}</PricingCard.MainPrice>
-                    </PricingCard.Price>
-                    <PricingCard.Description className="mb-5">
-                      1º pagamento · depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
-                    </PricingCard.Description>
-
-                    <Button
-                      href={p.href}
-                      variant={p.highlight ? "primary" : "ghost"}
-                      size="sm"
-                      className="w-full justify-start !whitespace-normal !pr-4 text-[13px] leading-tight"
-                      event="InitiateCheckout"
-                      eventParams={{ content_name: p.name, value: Number(p.firstPrice.replace(",", ".")), currency: "BRL" }}
-                    >
-                      Quero ser membro fundador
-                    </Button>
-                  </PricingCard.Header>
-
-                  <PricingCard.Body>
-                    <PricingCard.List>
-                      <PricingCard.ListItem>
-                        <CheckCircle2 aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-green" />
-                        <span className="flex flex-wrap items-center gap-x-1.5">
-                          Até {p.salesLimit.toLocaleString("pt-BR")} vendas/mês
-                          {salesJump !== null && (
-                            <span className="inline-flex items-center gap-0.5 rounded-full bg-green/15 px-1.5 py-0.5 font-mono text-[10px] tabular text-green">
-                              <ArrowUp aria-hidden className="h-2.5 w-2.5" />
-                              {salesJump}%
-                            </span>
-                          )}
-                        </span>
-                      </PricingCard.ListItem>
-                      {p.features.map((f) => (
-                        <PricingCard.ListItem key={f}>
-                          <CheckCircle2 aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-green" />
-                          <span className={f.includes("VIP") ? "text-fg" : undefined}>{f}</span>
-                        </PricingCard.ListItem>
-                      ))}
-                      {p.lockedFeatures?.map((f) => (
-                        <PricingCard.ListItem key={f} className="opacity-45">
-                          <XCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-fg-3" />
-                          <span className="line-through">{f}</span>
-                        </PricingCard.ListItem>
-                      ))}
-                    </PricingCard.List>
-
-                    <PricingCard.Separator className="mt-auto" />
-
-                    <p className="-mt-1 font-mono text-[11px] text-fg-3">{p.extraSale}</p>
-                  </PricingCard.Body>
-                </PricingCard.Card>
-              </Reveal>
-            );
-          })}
+        <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {top.map((p, i) => (
+            <Reveal key={p.id} delay={i * 0.08} amount={0.15} className="h-full">
+              <PlanCard p={p} />
+            </Reveal>
+          ))}
         </div>
+
+        {master && (
+          <Reveal delay={0.24} amount={0.15} className="mt-4 block">
+            <MasterCard p={master} />
+          </Reveal>
+        )}
       </Container>
     </Section>
   );

@@ -25,7 +25,7 @@ export function Header({
 }: ComponentProps<"div"> & { glassEffect?: boolean }) {
   return (
     <div
-      className={clsx("relative mb-4 overflow-hidden rounded-xl border border-white/[0.09] bg-white/[0.04] p-4", className)}
+      className={clsx("relative mb-4 overflow-hidden rounded-xl border border-white/[0.09] bg-[#0d0d0f] p-4", className)}
       {...props}
     >
       {glassEffect && (

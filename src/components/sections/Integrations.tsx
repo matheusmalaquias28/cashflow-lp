@@ -43,6 +43,9 @@ export function BrandMark({ name, size = "md" }: { name: string; size?: "md" | "
 }
 
 const ALL = [...INTEGRATIONS, "Meta Ads"];
+// No mobile o hub mostra só as plataformas mais conhecidas; o resto fica empilhado.
+const KNOWN = ["Hotmart", "Kiwify", "Kirvano", "Cakto", "Ticto", "Hubla"];
+const REST = ALL.filter((n) => !KNOWN.includes(n));
 
 export function Integrations() {
   return (
@@ -56,11 +59,18 @@ export function Integrations() {
         />
 
         <Reveal className="mt-16" amount={0.2}>
-          <Hub />
+          {/* Desktop: todas as plataformas */}
+          <Hub items={ALL} id="d" className="hidden md:block" />
+          {/* Mobile: só as mais conhecidas */}
+          <Hub items={KNOWN} id="m" compact className="md:hidden" />
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-          {ALL.map((n, i) => (
+        {/* Demais plataformas — empilhadas abaixo (só no mobile) */}
+        <p className="mt-10 text-center font-mono text-[11px] uppercase tracking-[0.16em] text-fg-3 md:hidden">
+          E muitas outras
+        </p>
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 md:hidden">
+          {REST.map((n, i) => (
             <Tile key={n} name={n} index={i} />
           ))}
         </div>
@@ -71,31 +81,41 @@ export function Integrations() {
 
 /* ----- Hub: logos orbit → lines converge into Cashflow ----- */
 
-function Hub() {
-  const W = 1000;
-  const H = 420;
+function Hub({
+  items,
+  id,
+  className,
+  compact = false,
+}: {
+  items: string[];
+  id: string;
+  className?: string;
+  compact?: boolean;
+}) {
+  const W = compact ? 440 : 1000;
+  const H = compact ? 440 : 420;
   const cx = W / 2;
   const cy = H / 2;
-  const items = ALL;
+  const rx = compact ? 150 : 450;
+  const ry = compact ? 150 : 175;
   const positions = items.map((_, i) => {
     const t = i / items.length;
     const ang = t * Math.PI * 2 - Math.PI / 2;
-    const rx = 450;
-    const ry = 175;
     return { x: cx + Math.cos(ang) * rx, y: cy + Math.sin(ang) * ry };
   });
+  const gid = `hub-glow-${id}`;
 
   return (
-    <div className="relative mx-auto hidden w-full max-w-5xl py-6 md:block">
+    <div className={clsx("relative mx-auto w-full max-w-5xl py-6", className)}>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" fill="none">
         <defs>
-          <radialGradient id="hub-glow" cx="50%" cy="50%" r="50%">
+          <radialGradient id={gid} cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#FA0A15" stopOpacity="0.55" />
             <stop offset="60%" stopColor="#830006" stopOpacity="0.15" />
             <stop offset="100%" stopColor="#830006" stopOpacity="0" />
           </radialGradient>
         </defs>
-        <circle cx={cx} cy={cy} r="200" fill="url(#hub-glow)" />
+        <circle cx={cx} cy={cy} r={compact ? 150 : 200} fill={`url(#${gid})`} />
         {positions.map((p, i) => {
           const mx = (p.x + cx) / 2;
           const d = `M ${p.x} ${p.y} Q ${mx} ${p.y} ${cx} ${cy}`;
@@ -134,10 +154,13 @@ function Hub() {
         whileInView={{ scale: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.3 }}
-        className="absolute left-1/2 top-1/2 flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-3xl border border-red/40 bg-[#0a0a0b] shadow-[0_0_80px_rgba(250,10,21,.45)]"
+        className={clsx(
+          "absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-3xl border border-red/40 bg-[#0a0a0b] shadow-[0_0_80px_rgba(250,10,21,.45)]",
+          compact ? "h-16 w-16" : "h-24 w-24",
+        )}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/logo-icon.svg" alt="Cashflow" className="h-12 w-12" />
+        <img src="/brand/logo-icon.svg" alt="Cashflow" className={compact ? "h-8 w-8" : "h-12 w-12"} />
         <span className="absolute -inset-1 -z-10 rounded-[1.75rem] border border-red/20 animate-[pulse-ring_2.4s_ease-out_infinite]" />
       </motion.div>
 
@@ -155,13 +178,15 @@ function Hub() {
           <motion.div
             animate={{ y: [0, -5, 0] }}
             transition={{ duration: 3 + (i % 4) * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
-            className="flex h-12 w-max items-center rounded-xl border border-line bg-[#0c0c0d]/90 px-4 shadow-[0_10px_30px_-10px_rgba(0,0,0,.8)] backdrop-blur"
+            className={clsx(
+              "flex w-max items-center rounded-xl border border-line bg-[#0c0c0d]/90 shadow-[0_10px_30px_-10px_rgba(0,0,0,.8)] backdrop-blur",
+              compact ? "h-9 px-2.5" : "h-12 px-4",
+            )}
           >
             <BrandMark name={items[i]} />
           </motion.div>
         </motion.div>
       ))}
-
     </div>
   );
 }
