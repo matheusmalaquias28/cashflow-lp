@@ -87,12 +87,12 @@ export function OffersOverview() {
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-red/15 text-red">
                   <Zap className="h-3 w-3" />
                 </span>
-                Experimente: troque o período e a ordenação ao lado.
+                Experimente: troque o período e a ordenação.
               </p>
             </Reveal>
           </div>
 
-          <Reveal delay={0.1} amount={0.2}>
+          <Reveal delay={0.1} amount={0.2} className="min-w-0">
             <Window title="cashflow.app / ofertas">
               <div className="p-4 sm:p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -143,8 +143,8 @@ export function OffersOverview() {
                   ))}
                 </div>
 
-                {/* Table */}
-                <div className="mt-4 overflow-x-auto">
+                {/* Tabela em telas médias para cima */}
+                <div className="mt-4 hidden overflow-x-auto sm:block">
                   <div className="min-w-[520px]">
                     <div className="grid grid-cols-[1.8fr_1fr_1fr_.7fr_.8fr_.7fr] gap-2 border-b border-line pb-2 font-mono text-[9px] uppercase tracking-wider text-fg-3">
                       <span>Oferta</span>
@@ -182,6 +182,40 @@ export function OffersOverview() {
                     </motion.div>
                   </div>
                 </div>
+
+                {/* No telefone a linha vira cartão: nada de rolagem lateral */}
+                <motion.div layout className="mt-4 flex flex-col gap-2 sm:hidden">
+                  <AnimatePresence initial={false}>
+                    {rows.map((r) => (
+                      <motion.div
+                        key={r.name}
+                        layout
+                        transition={{ type: "spring", stiffness: 350, damping: 32 }}
+                        className="rounded-lg border border-line bg-white/[0.02] p-3"
+                      >
+                        <div className="flex items-center gap-2">
+                          <PlatformDot name={r.platform} />
+                          <span className="min-w-0 flex-1 truncate text-xs font-medium">{r.name}</span>
+                          <span className={clsx("shrink-0 font-mono text-xs tabular", r.margem < 0 ? "text-red" : r.margem > 25 ? "text-green" : "text-fg-2")}>
+                            {r.margem.toFixed(1).replace(".", ",")}%
+                          </span>
+                        </div>
+                        <div className="mt-2.5 grid grid-cols-3 gap-2">
+                          {[
+                            { l: "Lucro", v: <AnimatedNumber value={r.lucro} prefix="R$ " />, c: r.lucro < 0 ? "text-red" : "text-green" },
+                            { l: "Receita", v: <AnimatedNumber value={r.receita} prefix="R$ " />, c: "text-fg" },
+                            { l: "ROAS", v: r.roas.toFixed(2).replace(".", ","), c: "text-fg-2" },
+                          ].map((k) => (
+                            <div key={k.l}>
+                              <div className="font-mono text-[9px] uppercase tracking-wider text-fg-3">{k.l}</div>
+                              <div className={clsx("mt-0.5 font-mono text-[11px] tabular", k.c)}>{k.v}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
               </div>
             </Window>
           </Reveal>

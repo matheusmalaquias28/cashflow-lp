@@ -1,26 +1,16 @@
 "use client";
 
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
-import { useRef } from "react";
+import { motion } from "motion/react";
 import { Button, Container, Eyebrow, SocialProof, SplitWords } from "../ui/primitives";
-import { Dashboard } from "../mock/Dashboard";
-import { ScaledFrame } from "../mock/ScaledFrame";
 import { CTA_PRIMARY_HREF, INTEGRATIONS, SOCIAL_PROOF } from "@/lib/data";
 import { BrandMark } from "./Integrations";
 import { Velaris } from "../ui/velaris";
 
 export function Hero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-
-  const rotateX = useTransform(scrollYProgress, [0, 0.45], reduce ? [0, 0] : [24, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.45], reduce ? [1, 1] : [0.88, 1]);
-  const y = useTransform(scrollYProgress, [0, 0.45], reduce ? [0, 0] : [80, 0]);
-  const glow = useTransform(scrollYProgress, [0, 0.45], [0.3, 1]);
-
   return (
-    <section className="relative overflow-hidden pt-44 sm:pt-52">
+    <section className="relative overflow-hidden">
+      {/* Hero — 100vh no mobile, conteúdo no topo e vídeo na parte inferior */}
+      <div className="relative flex min-h-[120svh] flex-col overflow-hidden pt-24 sm:block sm:min-h-0 sm:pt-40">
       {/* Backdrop */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <Velaris
@@ -33,29 +23,51 @@ export function Hero() {
         />
         <div className="absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]" />
         <div className="absolute left-1/2 top-[-14%] h-[62vh] w-[120vw] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(131,0,6,.4),transparent_68%)] blur-3xl" />
+        {/* Vídeo mobile — fundo (retrato), ancorado à parte inferior da hero */}
+        <video
+          className="absolute inset-0 h-full w-full object-contain object-bottom sm:hidden"
+          src="/video/bg-video-mobile-cash.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        />
+        {/* Vídeo desktop */}
+        <video
+          className="absolute inset-y-0 right-0 hidden h-full w-full bg-[#050303] object-contain object-right [clip-path:inset(0_4px)] sm:block"
+          src="/video/video-bg-desktop-cashflow.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        />
+        {/* Mescla a borda esquerda do vídeo com o fundo preto da hero (desktop) */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent lg:block" />
       </div>
 
-      <Container className="relative text-center">
+      <div className="relative w-full px-6 text-center sm:px-10 sm:text-left lg:pl-[100px] lg:pr-8">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <SocialProof text={SOCIAL_PROOF.text} avatars={SOCIAL_PROOF.avatars} />
+          <SocialProof text={SOCIAL_PROOF.text} avatars={SOCIAL_PROOF.avatars} align="left" />
         </motion.div>
 
         <SplitWords
           as="h1"
           text="Sua operação de Lowticket. // *Sob *controle."
           delay={0.4}
-          className="display mx-auto mt-8 max-w-5xl text-balance text-[2.75rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]"
+          className="display mt-6 max-w-5xl text-balance text-[2.75rem] sm:mt-8 sm:text-6xl md:text-7xl lg:text-[5.5rem]"
         />
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mt-7 max-w-2xl text-balance text-base leading-relaxed text-fg-2 sm:text-lg md:text-xl"
+          className="mt-5 max-w-2xl text-balance text-base leading-relaxed text-fg-2 sm:mt-7 sm:text-lg md:text-xl"
         >
           <span className="text-fg">Vendas, tráfego, ofertas e financeiro em um único lugar.</span> Tenha uma visão
           clara do que está acontecendo em cada oferta e tome decisões com dados reais, sem depender de
@@ -66,53 +78,35 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
+          className="mt-7 flex flex-col items-center justify-center gap-2 sm:mt-10 sm:flex-row sm:items-start sm:justify-start sm:gap-3"
         >
           <Button href={CTA_PRIMARY_HREF} size="lg" event="ViewContent" eventParams={{ content_name: "hero_cta" }}>
             Quero conhecer o Cashflow
           </Button>
           <a
             href="#produto"
-            className="inline-flex h-14 items-center gap-2 px-6 text-base text-fg-2 transition-colors hover:text-fg"
+            className="inline-flex h-11 items-center gap-2 px-6 text-base text-fg-2 transition-colors hover:text-fg sm:h-14"
           >
             Ver como funciona
           </a>
         </motion.div>
-      </Container>
+        </div>
 
-      {/* Dashboard */}
-      <div ref={ref} className="relative mx-auto mt-16 w-full max-w-[1280px] px-4 sm:mt-24 sm:px-8 [perspective:1600px]">
-        <motion.div
-          style={{ opacity: glow }}
-          className="pointer-events-none absolute inset-x-[10%] top-[10%] -z-10 h-[60%] rounded-[100%] bg-red-deep/60 blur-[100px]"
-        />
-        <motion.div
-          style={{ rotateX, scale, y, transformOrigin: "50% 0%" }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.9 }}
-          className="will-change-transform"
-        >
-          <div className="glow-red rounded-2xl">
-            <ScaledFrame width={1216} ratio={16 / 10} className="overflow-hidden rounded-2xl">
-              <Dashboard />
-            </ScaledFrame>
-          </div>
-        </motion.div>
+        {/* Espaço inferior no mobile — deixa o vídeo de fundo aparecer */}
+        <div className="flex-1 sm:hidden" />
       </div>
 
-      {/* Integrations marquee */}
-      <div className="relative mt-20 sm:mt-28">
+      {/* Integrations marquee — abaixo da hero no mobile */}
+      <div className="relative mt-12 sm:mt-28">
         <Container>
-          <Eyebrow className="justify-center">Integrado às plataformas que sua operação já usa</Eyebrow>
+          <Eyebrow dot={false} className="mx-auto max-w-xs text-center sm:max-w-none">
+            Integrado às plataformas que sua operação já usa
+          </Eyebrow>
         </Container>
         <div className="mt-6 overflow-hidden mask-fade-x">
-          <div className="flex w-max animate-marquee gap-3 pr-3">
+          <div className="flex w-max animate-marquee gap-10 pr-10">
             {[...INTEGRATIONS, "Meta Ads", ...INTEGRATIONS, "Meta Ads"].map((n, i) => (
-              <div
-                key={i}
-                className="flex h-12 items-center rounded-full border border-line bg-white/[0.02] px-5"
-              >
+              <div key={i} className="flex h-12 items-center">
                 <BrandMark name={n} />
               </div>
             ))}

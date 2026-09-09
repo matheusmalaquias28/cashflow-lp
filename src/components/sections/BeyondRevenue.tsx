@@ -20,39 +20,77 @@ export function BeyondRevenue() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   return (
-    <section ref={ref} className="relative h-[320vh] sm:h-[300vh]">
-      <div className="sticky top-0 flex min-h-screen items-center overflow-hidden py-24">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_60%_at_80%_50%,rgba(131,0,6,.35),transparent_70%)]" />
-        <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <div>
-            <Reveal>
-              <Eyebrow>Resultado por oferta</Eyebrow>
-            </Reveal>
-            <SplitWords
-              text="Pare de olhar só para *faturamento."
-              className="display mt-5 text-4xl sm:text-5xl lg:text-6xl"
-            />
-            <Reveal delay={0.1}>
-              <p className="mt-6 max-w-md text-lg text-fg-2">
-                Faturamento alto não significa operação saudável. Veja o que realmente importa em cada oferta:
-              </p>
-            </Reveal>
-            <div className="mt-8 flex flex-wrap gap-2">
-              {METRICS.map((m, i) => (
-                <Chip key={m.key} label={m.key} index={i} progress={scrollYProgress} />
-              ))}
-            </div>
-            <Reveal delay={0.2}>
-              <p className="mt-8 max-w-md text-sm text-fg-3">
-                Tudo atualizado para você entender rapidamente onde está ganhando dinheiro e onde está perdendo.
-              </p>
-            </Reveal>
-          </div>
+    <>
+      {/* No telefone a copy rola antes e o trecho fixo carrega só o card, de modo
+          que a animação comece exatamente quando ele está centralizado na tela.
+          No desktop os dois dividem a mesma viewport, como antes. */}
+      <Container className="pt-24 sm:pt-32 lg:hidden">
+        <Copy chips={<StaticChips />} />
+      </Container>
 
-          <OfferCard progress={scrollYProgress} />
-        </Container>
-      </div>
-    </section>
+      <section ref={ref} className="relative h-[220vh] lg:h-[300vh]">
+        <div className="sticky top-0 flex min-h-screen items-center overflow-hidden py-16 lg:py-24">
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_60%_at_80%_50%,rgba(131,0,6,.16),transparent_72%)]" />
+          <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+            <div className="hidden lg:block">
+              <Copy
+                chips={
+                  <div className="mt-8 flex flex-wrap gap-2">
+                    {METRICS.map((m, i) => (
+                      <Chip key={m.key} label={m.key} index={i} progress={scrollYProgress} />
+                    ))}
+                  </div>
+                }
+              />
+            </div>
+
+            <OfferCard progress={scrollYProgress} />
+          </Container>
+        </div>
+      </section>
+    </>
+  );
+}
+
+/** Copy da seção — usada acima do trecho fixo no mobile e dentro dele no desktop. */
+function Copy({ chips }: { chips: React.ReactNode }) {
+  return (
+    <div>
+      <Reveal>
+        <Eyebrow>Resultado por oferta</Eyebrow>
+      </Reveal>
+      <SplitWords text="Pare de olhar só para *faturamento." className="display mt-5 text-4xl sm:text-5xl lg:text-6xl" />
+      <Reveal delay={0.1}>
+        <p className="mt-6 max-w-md text-lg text-fg-2">
+          Faturamento alto não significa operação saudável. Veja o que realmente importa em cada oferta:
+        </p>
+      </Reveal>
+      {chips}
+      <Reveal delay={0.2}>
+        <p className="mt-8 max-w-md text-sm text-fg-3">
+          Tudo atualizado para você entender rapidamente onde está ganhando dinheiro e onde está perdendo.
+        </p>
+      </Reveal>
+    </div>
+  );
+}
+
+/** No mobile os chips não acompanham o scroll: o card é que fica sob o olhar. */
+function StaticChips() {
+  return (
+    <div className="mt-8 flex flex-wrap gap-2">
+      {METRICS.map((m, i) => (
+        <span
+          key={m.key}
+          className={clsx(
+            "rounded-full border px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider",
+            i >= 3 ? "border-green/50 bg-green/15 text-white" : "border-line bg-white/[0.03] text-fg-3",
+          )}
+        >
+          {m.key}
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -78,16 +116,18 @@ function OfferCard({ progress }: { progress: MotionValue<number> }) {
   const y = useTransform(progress, [0, 1], [40, -40]);
   return (
     <motion.div style={{ y }} className="relative">
-      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-red-deep/25 blur-3xl" />
-      <div className="panel overflow-hidden">
-        <div className="flex items-center justify-between border-b border-line px-6 py-4">
+      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-red-deep/15 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-white/[0.09] bg-[#08080a]/85 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_30px_80px_-40px_rgba(0,0,0,.95)] backdrop-blur-2xl">
+        {/* brilho de topo — mantém a leitura de vidro sobre a base escura */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/[0.06] to-transparent" />
+        <div className="relative flex items-center justify-between border-b border-white/[0.07] px-6 py-4">
           <div>
             <div className="text-[11px] text-fg-3">Oferta</div>
             <div className="text-base font-bold tracking-tight">{OFFER.violao.name} · Completo</div>
           </div>
           <span className="rounded-full bg-white/[0.05] px-2.5 py-1 font-mono text-[10px] text-fg-2">Últimos 30 dias</span>
         </div>
-        <div className="divide-y divide-line">
+        <div className="relative divide-y divide-white/[0.06]">
           {METRICS.map((m, i) => (
             <MetricRow key={m.key} metric={m} index={i} progress={progress} />
           ))}

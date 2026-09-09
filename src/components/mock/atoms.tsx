@@ -81,6 +81,7 @@ export function AreaChart({
   showGrid = true,
   grow = false,
   delay = 0,
+  pad = 8,
 }: {
   data: number[];
   data2?: number[];
@@ -95,10 +96,11 @@ export function AreaChart({
   /** Rises from the baseline while the curve draws — used on the hero chart. */
   grow?: boolean;
   delay?: number;
+  /** Inner margin so the head marker never touches (and gets clipped by) the edge. */
+  pad?: number;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
-  const pad = 8;
   const all = [...data, ...(data2 ?? [])];
   const max = Math.max(...all) * 1.08;
   const min = Math.min(...all) * 0.85;

@@ -37,6 +37,10 @@ const COLUMNS = (() => {
 
 const MAX = STEPS[0].value;
 
+/* No telefone sete colunas ficam ilegíveis; o pró-labore sai do gráfico
+   (o caixa real continua descontando ele). */
+const hideOnMobile = (label: string) => label === "Pró-labore";
+
 export function Waterfall() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.35 });
@@ -78,20 +82,21 @@ export function Waterfall() {
               </div>
             </div>
 
-            <div className="relative h-[280px] sm:h-[340px]">
+            <div className="relative mt-4 h-[280px] sm:h-[340px]">
               {[0.25, 0.5, 0.75, 1].map((f) => (
                 <div key={f} className="absolute inset-x-0 border-t border-dashed border-line" style={{ bottom: `${f * 100}%` }} />
               ))}
 
-              <div className="absolute inset-0 grid grid-cols-7 items-end gap-2 sm:gap-4">
+              <div className="absolute inset-0 grid grid-cols-6 items-end gap-2 sm:grid-cols-7 sm:gap-4">
                 {COLUMNS.map((c, i) => {
                   const active = step >= i;
                   const isEnd = c.kind === "end";
                   const isStart = c.kind === "start";
-                  const columnPct = (c.before / MAX) * 100;
+                  // 88% deixa a folga que o rótulo de valor ocupa acima da coluna mais alta.
+                  const columnPct = (c.before / MAX) * 88;
                   const cutPct = c.before > 0 ? (c.cut / c.before) * 100 : 0;
                   return (
-                    <div key={c.label} className="relative h-full">
+                    <div key={c.label} className={clsx("relative h-full", hideOnMobile(c.label) && "hidden sm:block")}>
                       {/* Coluna cresce da base para cima */}
                       <motion.div
                         className={clsx(
@@ -134,10 +139,10 @@ export function Waterfall() {
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-7 gap-2 sm:gap-4">
+            <div className="mt-4 grid grid-cols-6 gap-2 sm:grid-cols-7 sm:gap-4">
               {COLUMNS.map((c, i) => (
-                <motion.div key={c.label} initial={{ opacity: 0.25 }} animate={step >= i ? { opacity: 1 } : {}} className="text-center">
-                  <div className={clsx("text-[10px] font-semibold leading-tight sm:text-xs", c.kind === "end" && "text-green")}>{c.label}</div>
+                <motion.div key={c.label} initial={{ opacity: 0.25 }} animate={step >= i ? { opacity: 1 } : {}} className={clsx("text-center", hideOnMobile(c.label) && "hidden sm:block")}>
+                  <div className={clsx("text-[8px] font-semibold leading-tight sm:text-xs", c.kind === "end" && "text-green")}>{c.label}</div>
                   <div className="mt-1 hidden text-[10px] leading-snug text-fg-3 lg:block">{c.note}</div>
                 </motion.div>
               ))}

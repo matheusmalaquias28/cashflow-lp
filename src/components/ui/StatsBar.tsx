@@ -63,7 +63,7 @@ function Tween({
   );
 }
 
-export function StatsBar() {
+export function StatsBar({ className }: { className?: string }) {
   const [stats, setStats] = useState<Stats | null>(null);
   const [bump, setBump] = useState(0);
   const prevSales = useRef<number | null>(null);
@@ -103,42 +103,32 @@ export function StatsBar() {
     <AnimatePresence>
       {stats && (
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0, x: 12 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="pointer-events-none flex w-full max-w-[1200px] justify-center"
+          className={clsx("items-center gap-3 sm:gap-4", className)}
         >
-          <div className="flex max-w-full items-center gap-3 overflow-hidden rounded-full border border-line-2 bg-[#0a0a0b]/90 px-4 py-1.5 shadow-[0_20px_60px_-30px_rgba(0,0,0,.95)] backdrop-blur-xl sm:gap-4 sm:px-5">
-            <span className="flex shrink-0 items-center gap-1.5">
-              <span className="relative flex h-1.5 w-1.5">
-                <motion.span
-                  key={bump}
-                  className="absolute inset-0 rounded-full bg-red"
-                  initial={{ scale: 1, opacity: 0.9 }}
-                  animate={{ scale: 3, opacity: 0 }}
-                  transition={{ duration: 1.4, ease: "easeOut" }}
-                />
-                <span className="h-1.5 w-1.5 rounded-full bg-red" />
-              </span>
-              <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-fg-3 sm:inline">
-                Ao vivo
-              </span>
+          <span className="flex shrink-0 items-center gap-1.5">
+            <span className="relative flex h-1.5 w-1.5">
+              <motion.span
+                key={bump}
+                className="absolute inset-0 rounded-full bg-red"
+                initial={{ scale: 1, opacity: 0.9 }}
+                animate={{ scale: 3, opacity: 0 }}
+                transition={{ duration: 1.4, ease: "easeOut" }}
+              />
+              <span className="h-1.5 w-1.5 rounded-full bg-red" />
             </span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-fg-3">Ao vivo</span>
+          </span>
 
-            <Item label="Processado">
-              <Tween value={stats.faturamento} prefix="R$ " />
-            </Item>
-            <Item label="Vendas">
-              <Tween value={stats.vendas} />
-            </Item>
-            <Item label="Trackeadas" className="hidden sm:flex">
-              <Tween value={stats.trackeadas} />
-            </Item>
-            <Item label="Precisão" className="hidden md:flex">
-              <Tween value={stats.pct} digits={1} suffix="%" className="text-red" />
-            </Item>
-          </div>
+          <Item label="Processado">
+            <Tween value={stats.faturamento} prefix="R$ " />
+          </Item>
+          <Item label="Vendas">
+            <Tween value={stats.vendas} />
+          </Item>
         </motion.div>
       )}
     </AnimatePresence>

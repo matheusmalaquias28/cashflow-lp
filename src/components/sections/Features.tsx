@@ -203,10 +203,10 @@ function LiveDashboard() {
                 >
                   <PlatformDot name={sale.platform} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[11px] font-medium">{sale.offer}</span>
-                    <span className="text-[9px] text-fg-3">{sale.platform}</span>
+                    <span className="block truncate text-[11px] font-medium leading-tight">{sale.offer}</span>
+                    <span className="block truncate text-[9px] leading-tight text-fg-3">{sale.platform}</span>
                   </span>
-                  <span className="font-mono text-[11px] tabular text-green">+{BRL(sale.value)}</span>
+                  <span className="font-mono text-[11px] tabular text-green">+R$ {BRL(sale.value)}</span>
                 </motion.div>
               ))}
             </AnimatePresence>

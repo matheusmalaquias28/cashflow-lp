@@ -6,7 +6,7 @@ export const CTA_PRIMARY_HREF = "#planos";
  * Só troque o texto por uma recomendação quando ela for real.
  */
 export const SOCIAL_PROOF = {
-  text: "Membros fundadores têm condições especiais de entrada.",
+  text: "+350 usuários ativos",
   avatars: ["/avatars/1.jpg", "/avatars/2.jpg", "/avatars/3.jpg"],
 };
 

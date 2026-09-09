@@ -120,7 +120,17 @@ export function SplitWords({
 
 /* ---------- Typography ---------- */
 
-export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
+export function Eyebrow({
+  children,
+  className,
+  dot = true,
+}: {
+  children: ReactNode;
+  className?: string;
+  /** Sem o ponto o texto vira um bloco simples, então ele pode ser balanceado. */
+  dot?: boolean;
+}) {
+  if (!dot) return <div className={clsx("eyebrow text-balance", className)}>{children}</div>;
   return (
     <div className={clsx("eyebrow flex items-center gap-2", className)}>
       <span className="relative inline-flex h-1.5 w-1.5">
@@ -233,21 +243,37 @@ export function Button({
 export function SocialProof({
   text,
   avatars = [],
+  align = "center",
   className,
 }: {
   text: string;
   avatars?: string[];
+  align?: "center" | "left";
   className?: string;
 }) {
   const list = avatars.length ? avatars : [null, null, null];
+  const left = align === "left";
   return (
-    <div className={clsx("flex items-center justify-center gap-3.5", className)}>
+    <div
+      className={clsx(
+        "flex flex-row items-center gap-3 sm:gap-3.5",
+        left ? "justify-center sm:justify-start" : "justify-center",
+        className
+      )}
+    >
       <div className="flex pl-3">
         {list.map((src, i) => (
           <Avatar key={i} src={src} z={list.length - i} />
         ))}
       </div>
-      <p className="max-w-[15rem] text-left text-sm leading-snug text-fg-2">{text}</p>
+      <p
+        className={clsx(
+          "max-w-[17rem] text-sm leading-snug text-fg-2 sm:max-w-[15rem]",
+          left ? "text-center sm:text-left" : "text-center"
+        )}
+      >
+        {text}
+      </p>
     </div>
   );
 }
@@ -257,7 +283,7 @@ function Avatar({ src, z }: { src: string | null; z: number }) {
   return (
     <span
       style={{ zIndex: z }}
-      className="relative -ml-3 flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-white/[0.18] to-white/[0.05] ring-2 ring-white/15 transition-transform duration-500 ease-out-expo hover:-translate-x-3"
+      className="relative -ml-3 flex h-[35px] w-[35px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-white/[0.18] to-white/[0.05] ring-2 ring-white/15 transition-transform duration-500 ease-out-expo hover:-translate-x-3"
     >
       {ok && src ? (
         // eslint-disable-next-line @next/next/no-img-element
