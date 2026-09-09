@@ -100,8 +100,8 @@ export function Hero() {
         <div className="flex-1 sm:hidden" />
       </div>
 
-      {/* Integrations marquee — abaixo da hero no mobile */}
-      <div className="relative mt-12 sm:mt-28">
+      {/* Integrations marquee — abaixo da hero no mobile (invade levemente o vídeo) */}
+      <div className="relative z-10 -mt-24 sm:mt-28">
         <Container>
           <Eyebrow dot={false} className="mx-auto max-w-xs text-center sm:max-w-none">
             Integrado às plataformas que sua operação já usa
