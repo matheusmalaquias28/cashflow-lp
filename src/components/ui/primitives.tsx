@@ -13,7 +13,7 @@ import { AntiMetalBlock } from "./anti-metal-button";
 /* ---------- Layout ---------- */
 
 export function Container({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={clsx("mx-auto w-full max-w-[1200px] px-5 sm:px-8", className)}>{children}</div>;
+  return <div className={clsx("mx-auto w-full max-w-[1200px] px-5 sm:px-8 min-[1921px]:max-w-[1600px] min-[1921px]:px-12", className)}>{children}</div>;
 }
 
 export function Section({
@@ -156,7 +156,7 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <div className={clsx("max-w-3xl", align === "center" && "mx-auto text-center", className)}>
+    <div className={clsx("max-w-3xl min-[1921px]:max-w-4xl", align === "center" && "mx-auto text-center", className)}>
       {eyebrow && (
         <Reveal>
           <Eyebrow className={align === "center" ? "justify-center" : undefined}>{eyebrow}</Eyebrow>
@@ -164,11 +164,11 @@ export function SectionHeader({
       )}
       <SplitWords
         text={title}
-        className="display mt-5 text-balance text-4xl sm:text-5xl lg:text-6xl"
+        className="display mt-5 text-balance text-4xl sm:text-5xl lg:text-6xl min-[1921px]:text-7xl"
       />
       {lead && (
         <Reveal delay={0.15}>
-          <p className="mt-6 text-balance text-base text-fg-2 sm:text-lg leading-relaxed">{lead}</p>
+          <p className="mt-6 text-balance text-base text-fg-2 sm:text-lg leading-relaxed min-[1921px]:text-xl">{lead}</p>
         </Reveal>
       )}
     </div>
@@ -227,7 +227,7 @@ export function Button({
         width={block}
         accentFrom={variant === "ghost" ? "#3a3a3e" : "#FF3B44"}
         accentTo={variant === "ghost" ? "#232326" : "#D40510"}
-        dotColor={variant === "ghost" ? "#ffffff" : "#5c0004"}
+        dotColor={variant === "ghost" ? "#ffffff" : "#120003"}
       />
     </Link>
   );

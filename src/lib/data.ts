@@ -7,7 +7,7 @@ export const CTA_PRIMARY_HREF = "#planos";
  */
 export const SOCIAL_PROOF = {
   text: "+350 usuários ativos",
-  avatars: ["/avatars/1.jpg", "/avatars/2.jpg", "/avatars/3.jpg"],
+  avatars: ["/avatars/1.jpg", "/avatars/2.jpg", "/avatars/3.jpg", "/avatars/4.jpg"],
 };
 
 /**

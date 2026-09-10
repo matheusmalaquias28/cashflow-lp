@@ -3,11 +3,12 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import clsx from "clsx";
-import { CheckCircle2, XCircle, ArrowUp, Plus, Sparkles, Gem, Flame, Crown } from "lucide-react";
+import { CheckCircle2, XCircle, ArrowUp, Plus, Sparkles, Gem, Flame, Crown, AtSign } from "lucide-react";
 import * as PricingCard from "../ui/pricing-card";
 import { InteractiveTiltCard } from "../ui/tilt-card";
-import { Button, Container, Eyebrow, Logo, Reveal, Section, SectionHeader, SplitWords } from "../ui/primitives";
+import { Button, Container, Eyebrow, Reveal, Section, SectionHeader, SplitWords } from "../ui/primitives";
 
+import { track } from "../ui/MetaPixel";
 import { CTA_PRIMARY_HREF, FAQ, PLANS } from "@/lib/data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -39,8 +40,14 @@ export function Manifesto() {
           </p>
         </Reveal>
         <Reveal delay={0.25} amount={0.15}>
-          <div className="mx-auto mt-16 w-full max-w-4xl [perspective:1200px]">
-            <div className="relative aspect-[16/10] w-full">
+          <div className="mx-auto mt-16 w-full max-w-4xl [perspective:1200px] min-[1921px]:max-w-[1200px]">
+            <a
+              href="https://www.instagram.com/heitornogueirama/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Abrir o Instagram de Heitor Nogueira em uma nova aba"
+              className="group relative block aspect-[16/10] w-full rounded-[20px] outline-none ring-red/50 focus-visible:ring-2"
+            >
               <div className="pointer-events-none absolute -inset-10 -z-10 rounded-[3rem] bg-red-deep/40 blur-[80px]" />
               <InteractiveTiltCard
                 image={{ src: "/manifesto.jpg", alt: "O ecossistema de Lowticket por trás do Cashflow" }}
@@ -52,7 +59,11 @@ export function Manifesto() {
                 glareIntensity={0.18}
                 glareSize={70}
               />
-            </div>
+              <span className="pointer-events-none absolute bottom-4 right-4 z-10 flex items-center gap-2 rounded-full border border-white/15 bg-black/55 px-3.5 py-2 text-[11px] font-semibold text-fg opacity-0 backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 sm:bottom-6 sm:right-6">
+                <AtSign className="h-3.5 w-3.5" />
+                @heitornogueirama
+              </span>
+            </a>
           </div>
         </Reveal>
 
@@ -124,6 +135,37 @@ function PlanFeatureItems({ p, salesJump }: { p: Plan; salesJump: number | null 
   );
 }
 
+/**
+ * CTA dos planos: fundo sólido, sem ícone. O Diamond usa o vermelho da marca
+ * para se destacar entre os cartões brancos.
+ */
+function PlanButton({ p }: { p: Plan }) {
+  const external = p.href.startsWith("http");
+  return (
+    <a
+      href={p.href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      onClick={() =>
+        track("InitiateCheckout", {
+          content_name: p.name,
+          value: Number(p.firstPrice.replace(",", ".")),
+          currency: "BRL",
+        })
+      }
+      className={clsx(
+        "flex h-12 w-full items-center justify-center rounded-xl px-4 text-center text-[13px] font-bold leading-tight",
+        "transition-[transform,background-color,box-shadow] duration-300 ease-out-expo active:scale-[0.98]",
+        p.highlight
+          ? "bg-red text-white shadow-[0_10px_30px_-10px_rgba(250,10,21,.9)] hover:bg-[#ff2733] hover:shadow-[0_14px_38px_-10px_rgba(250,10,21,1)]"
+          : "bg-white text-[#0a0a0b] hover:bg-white/90",
+      )}
+    >
+      Quero ser membro {p.name}
+    </a>
+  );
+}
+
 function PlanCard({ p }: { p: Plan }) {
   const Icon = PLAN_ICONS[p.id];
   const salesJump = salesJumpFor(p);
@@ -131,7 +173,9 @@ function PlanCard({ p }: { p: Plan }) {
     <PricingCard.Card
       className={clsx(
         "h-full transition-transform duration-500 ease-out-expo hover:-translate-y-1",
-        p.highlight && "border-red/45 bg-red/[0.05] shadow-[0_0_0_1px_rgba(250,10,21,.25),0_30px_90px_-40px_rgba(250,10,21,.7)]",
+        // O Diamond ganha escala e sombra maiores — cresce sem empurrar os vizinhos.
+        p.highlight &&
+          "border-red/45 bg-red/[0.05] shadow-[0_0_0_1px_rgba(250,10,21,.3),0_40px_110px_-40px_rgba(250,10,21,.85)] lg:z-10 lg:scale-[1.05]",
       )}
     >
       {p.highlight && (
@@ -145,7 +189,7 @@ function PlanCard({ p }: { p: Plan }) {
             {p.name}
           </PricingCard.PlanName>
           {p.highlight && (
-            <PricingCard.Badge className="border-green bg-green/60 text-green">Mais escolhido</PricingCard.Badge>
+            <PricingCard.Badge className="border-green/50 bg-green/15 font-semibold text-green">Mais escolhido</PricingCard.Badge>
           )}
         </PricingCard.Plan>
 
@@ -161,16 +205,7 @@ function PlanCard({ p }: { p: Plan }) {
           depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
         </PricingCard.Description>
 
-        <Button
-          href={p.href}
-          variant={p.highlight ? "primary" : "ghost"}
-          size="sm"
-          className="w-full justify-start !whitespace-normal !pr-4 text-[13px] leading-tight"
-          event="InitiateCheckout"
-          eventParams={{ content_name: p.name, value: Number(p.firstPrice.replace(",", ".")), currency: "BRL" }}
-        >
-          Quero ser membro fundador
-        </Button>
+        <PlanButton p={p} />
       </PricingCard.Header>
 
       <PricingCard.Body>
@@ -212,16 +247,9 @@ function MasterCard({ p }: { p: Plan }) {
             depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
           </PricingCard.Description>
 
-          <Button
-            href={p.href}
-            variant="ghost"
-            size="sm"
-            className="mt-auto w-full justify-start !whitespace-normal !pr-4 text-[13px] leading-tight"
-            event="InitiateCheckout"
-            eventParams={{ content_name: p.name, value: Number(p.firstPrice.replace(",", ".")), currency: "BRL" }}
-          >
-            Quero ser membro fundador
-          </Button>
+          <div className="mt-auto">
+            <PlanButton p={p} />
+          </div>
         </PricingCard.Header>
 
         <PricingCard.Body className="lg:flex-1">
@@ -347,7 +375,7 @@ export function FinalCta() {
             <div className="pointer-events-none absolute inset-0 -z-10 grid-bg opacity-60 [mask-image:radial-gradient(ellipse_60%_70%_at_50%_100%,black,transparent)]" />
             <SplitWords
               text="Quanto mais sua operação cresce, mais dados você precisa *controlar."
-              className="display mx-auto max-w-4xl text-balance text-4xl sm:text-5xl lg:text-6xl"
+              className="display mx-auto max-w-4xl text-balance text-4xl sm:text-5xl lg:text-6xl min-[1921px]:max-w-5xl min-[1921px]:text-7xl"
             />
             <Reveal delay={0.15}>
               <p className="mx-auto mt-6 max-w-2xl text-balance text-lg text-fg-2">
@@ -367,26 +395,5 @@ export function FinalCta() {
         </Reveal>
       </Container>
     </Section>
-  );
-}
-
-export function Footer() {
-  return (
-    <footer className="border-t border-line">
-      <Container className="flex flex-col items-start justify-between gap-6 py-10 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-4">
-          <Logo className="h-6" />
-          <span className="hidden text-sm text-fg-3 sm:inline">Sua operação de Lowticket. Sob controle.</span>
-        </div>
-        <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-fg-3">
-          <a href="#produto" className="hover:text-fg">Produto</a>
-          <a href="#financeiro" className="hover:text-fg">Financeiro</a>
-          <a href="#integracoes" className="hover:text-fg">Integrações</a>
-          <a href="#planos" className="hover:text-fg">Planos</a>
-          <a href="#faq" className="hover:text-fg">FAQ</a>
-        </nav>
-        <div className="font-mono text-[11px] text-fg-3">© {new Date().getFullYear()} Cashflow. Todos os direitos reservados.</div>
-      </Container>
-    </footer>
   );
 }

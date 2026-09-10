@@ -31,6 +31,10 @@ export function DoubleChevron({ index, dotColor }: { index: number; dotColor: st
   );
 }
 
+/* O bloco colapsado mostra só o primeiro chevron (o resto fica cortado pelo
+   overflow); ao abrir em hover, esta fila cobre a largura inteira do botão. */
+const CHEVRONS = Array.from({ length: 14 }, (_, i) => i);
+
 /**
  * The accent block pinned to the left of a button. It holds a row of chevrons
  * and stretches across the whole surface on hover (`group/btn` on the parent).
@@ -60,12 +64,12 @@ export function AntiMetalBlock({
           "inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -2px 4px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.25)",
       }}
       className={clsx(
-        "absolute bottom-1 left-1 top-1 z-10 flex items-center justify-start gap-2.5 overflow-hidden rounded-md pr-2.5",
-        "transition-[width,gap] duration-200 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover/btn:!w-[calc(100%-0.5rem)]",
+        "absolute bottom-1 left-1 top-1 z-10 flex items-center justify-start gap-[22px] overflow-hidden rounded-md pr-2.5",
+        "transition-[width] duration-200 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover/btn:!w-[calc(100%-0.5rem)]",
         className,
       )}
     >
-      {[0, 1, 2, 3, 4].map((i) => (
+      {CHEVRONS.map((i) => (
         <DoubleChevron key={i} index={i} dotColor={dotColor} />
       ))}
     </span>

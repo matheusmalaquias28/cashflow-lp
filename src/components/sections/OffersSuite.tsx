@@ -3,9 +3,10 @@
 import { AnimatePresence, motion, useInView } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
-import { Check, ArrowUpDown, Percent, Receipt, RotateCcw, Zap, Plus, Landmark } from "lucide-react";
+import { Check, Percent, Receipt, RotateCcw, Zap, Plus, Landmark, Search, Filter, LayoutGrid, List, ChevronUp, HelpCircle, Building2, Megaphone, Layers, Image as ImageIcon, History, Pencil } from "lucide-react";
 import { Container, Eyebrow, Reveal, Section, SplitWords } from "../ui/primitives";
-import { AreaChart, Pill, PlatformDot, Window, BRL } from "../mock/atoms";
+import { PlatformDot, Window, BRL } from "../mock/atoms";
+import { FilterChip, Label, Money, OfferCard, PBtn, SelectBox, Toggle, type OfferStat } from "../mock/product";
 import { OFFER } from "@/lib/data";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -14,55 +15,44 @@ const EASE = [0.16, 1, 0.3, 1] as const;
    1) Todas as ofertas em uma visão — filtros clicáveis
    ===================================================================== */
 
-type Period = "7d" | "30d" | "90d";
-const PERIODS: { id: Period; label: string }[] = [
-  { id: "7d", label: "7 dias" },
-  { id: "30d", label: "30 dias" },
-  { id: "90d", label: "90 dias" },
-];
+type Period = "Hoje" | "Últimos 7 dias" | "Últimos 30 dias";
+const PERIODS: Period[] = ["Hoje", "Últimos 7 dias", "Últimos 30 dias"];
+const FACTOR: Record<Period, number> = { Hoje: 1, "Últimos 7 dias": 5.6, "Últimos 30 dias": 21.4 };
 
-const OFFERS = [
-  { name: OFFER.desafio.name, platform: "Kiwify", base: { lucro: 12180, receita: 38500, inv: 11400, vendas: 819, ticket: 47 } },
-  { name: OFFER.violao.name, platform: "Hotmart", base: { lucro: 7640, receita: 42800, inv: 18200, vendas: 441, ticket: 97 } },
-  { name: OFFER.rotina.name, platform: "Cakto", base: { lucro: 5310, receita: 21940, inv: 7540, vendas: 593, ticket: 37 } },
-  { name: OFFER.churrasco.name, platform: "Kirvano", base: { lucro: -420, receita: 9450, inv: 6650, vendas: 350, ticket: 27 } },
-  { name: OFFER.planner.name, platform: "Ticto", base: { lucro: 3120, receita: 12690, inv: 5480, vendas: 270, ticket: 47 } },
+type Sort = "Maior Lucro" | "Maior Faturamento" | "Maior ROAS";
+const SORTS: Sort[] = ["Maior Lucro", "Maior Faturamento", "Maior ROAS"];
+
+const OFFERS: (OfferStat & { platform: string })[] = [
+  { name: OFFER.desafio.name, platform: "Kiwify", lucro: 489.6, faturamento: 512.4, gasto: 0, roas: null, margem: 96, status: "ativa", pixel: false, bump: true },
+  { name: OFFER.violao.name, sub: `${OFFER.violao.name} + Songbook Bônus`, platform: "Hotmart", lucro: 356.25, faturamento: 575.74, gasto: 112.9, roas: 5.1, margem: 62, status: "ativa", pixel: true, dupla: true },
+  { name: OFFER.rotina.name, platform: "Cakto", lucro: 66.3, faturamento: 66.3, gasto: 0, roas: null, margem: 100, status: "ativa", pixel: false, bump: true },
+  { name: OFFER.churrasco.name, platform: "Kirvano", lucro: -18.4, faturamento: 51.3, gasto: 69.7, roas: 0.74, margem: -36, status: "ativa", pixel: true },
 ];
-const FACTOR: Record<Period, number> = { "7d": 0.24, "30d": 1, "90d": 2.85 };
 
 export function OffersOverview() {
-  const [period, setPeriod] = useState<Period>("30d");
-  const [sort, setSort] = useState<"lucro" | "receita">("lucro");
+  const [period, setPeriod] = useState<Period>("Hoje");
+  const [sort, setSort] = useState<Sort>("Maior Lucro");
   const f = FACTOR[period];
 
   const rows = useMemo(() => {
-    const r = OFFERS.map((o) => {
-      const receita = o.base.receita * f;
-      const inv = o.base.inv * f;
-      const lucro = o.base.lucro * f;
-      return {
-        ...o,
-        receita,
-        inv,
-        lucro,
-        roas: receita / inv,
-        margem: (lucro / receita) * 100,
-        vendas: Math.round(o.base.vendas * f),
-      };
-    });
-    return r.sort((a, b) => b[sort] - a[sort]);
+    const r = OFFERS.map((o) => ({
+      ...o,
+      lucro: o.lucro * f,
+      faturamento: o.faturamento * f,
+      gasto: o.gasto * f,
+    }));
+    const key = sort === "Maior Lucro" ? "lucro" : sort === "Maior Faturamento" ? "faturamento" : "roas";
+    return r.sort((a, b) => (b[key] ?? -1) - (a[key] ?? -1));
   }, [f, sort]);
 
-  const totals = rows.reduce(
-    (acc, r) => ({ lucro: acc.lucro + r.lucro, receita: acc.receita + r.receita, inv: acc.inv + r.inv, vendas: acc.vendas + r.vendas }),
-    { lucro: 0, receita: 0, inv: 0, vendas: 0 },
-  );
+  const pos = rows.filter((r) => r.lucro > 0).length;
+  const neg = rows.length - pos;
 
   return (
     <Section className="!pt-0">
       <Container>
-        <div className="grid items-end gap-8 lg:grid-cols-[1fr_1.1fr]">
-          <div>
+        <div className="grid items-start gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="lg:sticky lg:top-28">
             <Reveal>
               <Eyebrow>Visão de ofertas</Eyebrow>
             </Reveal>
@@ -75,7 +65,7 @@ export function OffersOverview() {
             </Reveal>
             <Reveal delay={0.15}>
               <div className="mt-6 flex flex-wrap gap-2">
-                {["Lucro", "Receita", "Investimento", "ROAS", "Margem", "Vendas", "Ticket médio"].map((t) => (
+                {["Lucro", "Faturamento", "Gasto c/ anúncio", "ROAS", "Margem", "Vendas", "Ticket médio"].map((t) => (
                   <span key={t} className="rounded-full border border-line px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-fg-2">
                     {t}
                   </span>
@@ -93,125 +83,87 @@ export function OffersOverview() {
           </div>
 
           <Reveal delay={0.1} amount={0.2} className="min-w-0">
-            <Window title="cashflow.app / ofertas">
-              <div className="p-4 sm:p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex rounded-full border border-line bg-white/[0.02] p-1">
-                    {PERIODS.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => setPeriod(p.id)}
-                        className={clsx(
-                          "relative rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors",
-                          period === p.id ? "text-white" : "text-fg-3 hover:text-fg-2",
-                        )}
-                      >
-                        {period === p.id && (
-                          <motion.span
-                            layoutId="period-pill"
-                            className="absolute inset-0 rounded-full bg-red"
-                            transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                          />
-                        )}
-                        <span className="relative">{p.label}</span>
-                      </button>
-                    ))}
+            <Window title="cashflow.app / gestão de ofertas">
+              <div className="bg-app p-4 sm:p-5">
+                {/* Cabeçalho */}
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-[17px] font-bold tracking-tight">Gestão de Ofertas</div>
+                    <div className="mt-0.5 text-[10.5px] text-fg-3">Cada oferta é uma unidade de negócio. Acompanhe o resultado de cada uma e do portfólio.</div>
                   </div>
+                  <div className="hidden shrink-0 items-center gap-2 sm:flex">
+                    <PBtn tone="ghost" icon={HelpCircle}>Como as sugestões funcionam</PBtn>
+                    <PBtn tone="red" icon={Plus}>Nova oferta</PBtn>
+                  </div>
+                </div>
+
+                {/* Positivas / negativas */}
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-green/25 bg-[#0f1a12]/70 p-4">
+                    <Label className="text-green">● Ofertas positivas</Label>
+                    <div className="mt-2 flex items-end justify-between">
+                      <span className="text-3xl font-bold leading-none text-green">
+                        {pos} <span className="text-xs font-normal text-fg-2">de {rows.length}</span>
+                      </span>
+                      <span className="text-lg font-semibold text-green">{((pos / rows.length) * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[0.08]">
+                      <motion.div className="h-full bg-green" animate={{ width: `${(pos / rows.length) * 100}%` }} transition={{ duration: 0.8, ease: EASE }} />
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-red/25 bg-[#1a0f10]/70 p-4">
+                    <Label className="text-red">● Ofertas negativas</Label>
+                    <div className="mt-2 flex items-end justify-between">
+                      <span className="text-3xl font-bold leading-none text-red">
+                        {neg} <span className="text-xs font-normal text-fg-2">de {rows.length}</span>
+                      </span>
+                      <span className="text-lg font-semibold text-red">{((neg / rows.length) * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[0.08]">
+                      <motion.div className="h-full bg-red/70" animate={{ width: `${(neg / rows.length) * 100}%` }} transition={{ duration: 0.8, ease: EASE }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Filtros */}
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  <FilterChip count={rows.length}>Todas</FilterChip>
+                  <FilterChip active count={rows.length}>Ativa</FilterChip>
+                  <FilterChip count={0}>Em pausa</FilterChip>
+                  <FilterChip count={0}>Sem status</FilterChip>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <div className="flex h-8 min-w-[160px] flex-1 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#0d0d0d] px-2.5 text-[10.5px] text-fg-3">
+                    <Search className="h-3 w-3" /> Buscar oferta pelo nome…
+                  </div>
+                  <Filter className="hidden h-3 w-3 text-fg-3 sm:block" />
                   <button
-                    onClick={() => setSort((s) => (s === "lucro" ? "receita" : "lucro"))}
-                    className="flex items-center gap-1.5 rounded-full border border-line bg-white/[0.02] px-3 py-1.5 text-xs text-fg-2 transition-colors hover:bg-white/[0.05]"
+                    onClick={() => setPeriod((p) => PERIODS[(PERIODS.indexOf(p) + 1) % PERIODS.length])}
+                    className="rounded-lg outline-none ring-red/40 transition hover:brightness-125 focus-visible:ring-2"
+                    aria-label="Trocar período"
                   >
-                    <ArrowUpDown className="h-3 w-3" />
-                    Ordenar por <span className="font-semibold text-fg">{sort === "lucro" ? "Lucro" : "Receita"}</span>
+                    <SelectBox className="w-[140px]">{period}</SelectBox>
                   </button>
+                  <button
+                    onClick={() => setSort((x) => SORTS[(SORTS.indexOf(x) + 1) % SORTS.length])}
+                    className="rounded-lg outline-none ring-red/40 transition hover:brightness-125 focus-visible:ring-2"
+                    aria-label="Trocar ordenação"
+                  >
+                    <SelectBox className="w-[160px]">{sort}</SelectBox>
+                  </button>
+                  <span className="hidden items-center overflow-hidden rounded-lg border border-white/[0.08] text-[10px] sm:flex">
+                    <span className="flex items-center gap-1 bg-white/[0.08] px-2 py-1.5 font-medium"><LayoutGrid className="h-3 w-3" /> Cards</span>
+                    <span className="flex items-center gap-1 px-2 py-1.5 text-fg-3"><List className="h-3 w-3" /> Lista</span>
+                  </span>
+                  <PBtn tone="ghost" icon={ChevronUp} className="hidden sm:inline-flex">Recolher ofertas</PBtn>
                 </div>
 
-                {/* Totals */}
-                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {[
-                    { l: "Lucro", v: totals.lucro, p: "R$ ", accent: true },
-                    { l: "Receita", v: totals.receita, p: "R$ " },
-                    { l: "Investimento", v: totals.inv, p: "R$ " },
-                    { l: "Vendas", v: totals.vendas, p: "" },
-                  ].map((k) => (
-                    <div key={k.l} className={clsx("rounded-lg border p-3", k.accent ? "border-green/40 bg-green/[0.07]" : "border-line bg-white/[0.02]")}>
-                      <div className="text-[10px] text-fg-3">{k.l}</div>
-                      <div className={clsx("mt-0.5 text-base font-bold tracking-tight sm:text-lg", k.accent && "text-green")}>
-                        <AnimatedNumber value={k.v} prefix={k.p} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Tabela em telas médias para cima */}
-                <div className="mt-4 hidden overflow-x-auto sm:block">
-                  <div className="min-w-[520px]">
-                    <div className="grid grid-cols-[1.8fr_1fr_1fr_.7fr_.8fr_.7fr] gap-2 border-b border-line pb-2 font-mono text-[9px] uppercase tracking-wider text-fg-3">
-                      <span>Oferta</span>
-                      <span className="text-right">Lucro</span>
-                      <span className="text-right">Receita</span>
-                      <span className="text-right">ROAS</span>
-                      <span className="text-right">Margem</span>
-                      <span className="text-right">Vendas</span>
-                    </div>
-                    <motion.div layout className="divide-y divide-line/60">
-                      <AnimatePresence initial={false}>
-                        {rows.map((r) => (
-                          <motion.div
-                            key={r.name}
-                            layout
-                            transition={{ type: "spring", stiffness: 350, damping: 32 }}
-                            className="grid grid-cols-[1.8fr_1fr_1fr_.7fr_.8fr_.7fr] items-center gap-2 py-2.5 text-xs"
-                          >
-                            <span className="flex items-center gap-2 font-medium">
-                              <PlatformDot name={r.platform} />
-                              <span className="truncate">{r.name}</span>
-                            </span>
-                            <span className={clsx("text-right font-mono tabular", r.lucro < 0 ? "text-red" : "text-green")}>
-                              <AnimatedNumber value={r.lucro} prefix="R$ " />
-                            </span>
-                            <span className="text-right font-mono tabular"><AnimatedNumber value={r.receita} prefix="R$ " /></span>
-                            <span className="text-right font-mono tabular text-fg-2">{r.roas.toFixed(2).replace(".", ",")}</span>
-                            <span className={clsx("text-right font-mono tabular", r.margem < 0 ? "text-red" : r.margem > 25 ? "text-green" : "text-fg-2")}>
-                              {r.margem.toFixed(1).replace(".", ",")}%
-                            </span>
-                            <span className="text-right font-mono tabular text-fg-2"><AnimatedNumber value={r.vendas} /></span>
-                          </motion.div>
-                        ))}
-                      </AnimatePresence>
-                    </motion.div>
-                  </div>
-                </div>
-
-                {/* No telefone a linha vira cartão: nada de rolagem lateral */}
-                <motion.div layout className="mt-4 flex flex-col gap-2 sm:hidden">
+                {/* Cards de oferta — reordenam ao trocar a ordenação */}
+                <motion.div layout className="mt-4 grid gap-3 sm:grid-cols-2">
                   <AnimatePresence initial={false}>
-                    {rows.map((r) => (
-                      <motion.div
-                        key={r.name}
-                        layout
-                        transition={{ type: "spring", stiffness: 350, damping: 32 }}
-                        className="rounded-lg border border-line bg-white/[0.02] p-3"
-                      >
-                        <div className="flex items-center gap-2">
-                          <PlatformDot name={r.platform} />
-                          <span className="min-w-0 flex-1 truncate text-xs font-medium">{r.name}</span>
-                          <span className={clsx("shrink-0 font-mono text-xs tabular", r.margem < 0 ? "text-red" : r.margem > 25 ? "text-green" : "text-fg-2")}>
-                            {r.margem.toFixed(1).replace(".", ",")}%
-                          </span>
-                        </div>
-                        <div className="mt-2.5 grid grid-cols-3 gap-2">
-                          {[
-                            { l: "Lucro", v: <AnimatedNumber value={r.lucro} prefix="R$ " />, c: r.lucro < 0 ? "text-red" : "text-green" },
-                            { l: "Receita", v: <AnimatedNumber value={r.receita} prefix="R$ " />, c: "text-fg" },
-                            { l: "ROAS", v: r.roas.toFixed(2).replace(".", ","), c: "text-fg-2" },
-                          ].map((k) => (
-                            <div key={k.l}>
-                              <div className="font-mono text-[9px] uppercase tracking-wider text-fg-3">{k.l}</div>
-                              <div className={clsx("mt-0.5 font-mono text-[11px] tabular", k.c)}>{k.v}</div>
-                            </div>
-                          ))}
-                        </div>
+                    {rows.map((o) => (
+                      <motion.div key={o.name} layout transition={{ type: "spring", stiffness: 300, damping: 30 }}>
+                        <OfferCard o={o} />
                       </motion.div>
                     ))}
                   </AnimatePresence>
@@ -422,35 +374,62 @@ export function OfferConfig() {
 }
 
 /* =====================================================================
-   3) Seu Meta Ads dentro da operação
+   3) Seu Meta Ads dentro da operação — aba Meta com a tabela de campanhas
    ===================================================================== */
 
-const CAMPAIGNS = [
-  { n: `CBO · ${OFFER.desafio.short} · Interesses amplos`, spend: 4820, clicks: 9120, conv: 412, on: true },
-  { n: `CBO · ${OFFER.desafio.short} · LAL compradores 1%`, spend: 3140, clicks: 5230, conv: 236, on: true },
-  { n: `ABO · ${OFFER.violao.short} · Retarget 7d`, spend: 1980, clicks: 2810, conv: 141, on: true },
-  { n: `CBO · ${OFFER.rotina.short} · Aberto BR`, spend: 1460, clicks: 3120, conv: 88, on: false },
+type Campaign = {
+  n: string;
+  on: boolean;
+  budget: string;
+  spend: number;
+  rev: number;
+  roas: number;
+  sales: number;
+  cpa: number | null;
+  cpm: number | null;
+  imp: number;
+  clicks: number;
+};
+
+const CAMPAIGNS: Campaign[] = [
+  { n: `[${OFFER.violao.short.toLowerCase()}] - [teste de criativo] - [ABO 1-3-1] - [AD01] - [29/08]`, on: true, budget: "nos conjuntos", spend: 61.29, rev: 65.21, roas: 1.06, sales: 3, cpa: 30.65, cpm: 63.51, imp: 965, clicks: 57 },
+  { n: `[${OFFER.violao.short.toLowerCase()}] - [teste de escala] - [CBO 1-3-1] - [AD01] - [01/09]`, on: true, budget: "R$ 75,50", spend: 52.24, rev: 180.12, roas: 3.45, sales: 10, cpa: 13.06, cpm: 67.06, imp: 779, clicks: 42 },
+  { n: `[${OFFER.violao.short.toLowerCase()}] - [teste de escala] - [CBO 1-3-1] - [AD02] - [01/09]`, on: false, budget: "R$ 45,50", spend: 0, rev: 0, roas: 0, sales: 0, cpa: null, cpm: null, imp: 0, clicks: 0 },
+  { n: `[${OFFER.violao.short.toLowerCase()}] - [teste de criativo] - [ABO 1-3-1] - [AD03] - [29/08]`, on: false, budget: "nos conjuntos", spend: 0, rev: 0, roas: 0, sales: 0, cpa: null, cpm: null, imp: 0, clicks: 0 },
 ];
 
+
 export function MetaAds() {
-  const [active, setActive] = useState(0);
+  const [toggles, setToggles] = useState(() => CAMPAIGNS.map((c) => c.on));
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.4 });
 
+  // Ao vivo: uma campanha pausada liga e outra pausa, de tempos em tempos.
   useEffect(() => {
     if (!inView) return;
-    const t = setInterval(() => setActive((a) => (a + 1) % CAMPAIGNS.length), 2600);
+    const t = setInterval(() => {
+      setToggles((tg) => {
+        const next = [...tg];
+        const i = 2 + Math.floor(Math.random() * 2);
+        next[i] = !next[i];
+        return next;
+      });
+    }, 3200);
     return () => clearInterval(t);
   }, [inView]);
 
-  const c = CAMPAIGNS[active];
-  const spendSeries = [3, 4, 4, 6, 5, 7, 8, 7, 9, 10, 9, 12].map((v) => v * (1 + active * 0.15));
-  const convSeries = [1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 8].map((v) => v * (1 + active * 0.1));
+  const totals = CAMPAIGNS.reduce(
+    (a, c) => ({ spend: a.spend + c.spend, rev: a.rev + c.rev, sales: a.sales + c.sales, imp: a.imp + c.imp, clicks: a.clicks + c.clicks }),
+    { spend: 0, rev: 0, sales: 0, imp: 0, clicks: 0 },
+  );
+
+  const cell = (v: number | null, fmt: (n: number) => string, tone?: string) =>
+    v === null ? <span className="text-fg-3">N/A</span> : <span className={tone}>{fmt(v)}</span>;
 
   return (
     <Section className="!pt-0">
       <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
+        <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <Reveal>
               <Eyebrow>
@@ -478,64 +457,124 @@ export function MetaAds() {
             </Reveal>
           </div>
 
-          <Reveal amount={0.2}>
-            <div ref={ref} className="grid gap-3 sm:grid-cols-[1fr_1.1fr]">
-              <Window title="Campanhas" className="sm:row-span-2">
-                <div className="divide-y divide-line">
-                  {CAMPAIGNS.map((cp, i) => (
-                    <button
-                      key={cp.n}
-                      onClick={() => setActive(i)}
-                      className={clsx(
-                        "relative flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors",
-                        active === i ? "bg-white/[0.04]" : "hover:bg-white/[0.02]",
-                      )}
-                    >
-                      {active === i && (
-                        <motion.span layoutId="camp-bar" className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-red" />
-                      )}
-                      <span className={clsx("mt-1 h-2 w-2 shrink-0 rounded-full", cp.on ? "bg-green" : "bg-white/20")} />
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-xs font-medium">{cp.n}</span>
-                        <span className="mt-1 flex gap-3 font-mono text-[10px] tabular text-fg-3">
-                          <span>R$ {BRL(cp.spend)}</span>
-                          <span>{BRL(cp.clicks)} cliques</span>
-                          <span className="text-fg-2">{cp.conv} conv.</span>
-                        </span>
+          <Reveal amount={0.2} className="min-w-0">
+            <div ref={ref}>
+              <Window title="cashflow.app / tráfego">
+                <div className="bg-app p-4 sm:p-5">
+                  {/* Abas da tela de tráfego */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-white/[0.06] bg-card px-4 py-2.5 text-[11px]">
+                    {["Resumo", "Meta", "Pixel", "Vincular Campanhas", "Relatório"].map((t) => (
+                      <span key={t} className={clsx("font-medium", t === "Meta" ? "text-red" : "text-fg-2")}>
+                        {t}
                       </span>
-                    </button>
-                  ))}
+                    ))}
+                    <span className="ml-auto flex items-center gap-2">
+                      <Filter className="h-3 w-3 text-fg-3" />
+                      <SelectBox className="h-7 w-[110px] text-[10px]">Hoje</SelectBox>
+                    </span>
+                  </div>
+
+                  {/* Sub-abas */}
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-card p-1 text-[10px]">
+                      {[
+                        { i: Building2, l: "Contas" },
+                        { i: Megaphone, l: "Campanhas", n: 4, on: true },
+                        { i: Layers, l: "Conjuntos" },
+                        { i: ImageIcon, l: "Anúncios" },
+                      ].map(({ i: I, l, n, on }) => (
+                        <span key={l} className={clsx("flex items-center gap-1.5 rounded-md px-2.5 py-1.5", on ? "border border-red/40 text-red" : "text-fg-2")}>
+                          <I className="h-3 w-3" /> {l}
+                          {n && <span className="font-mono text-[9px]">{n}</span>}
+                        </span>
+                      ))}
+                    </span>
+                    <span className="hidden h-8 min-w-[150px] flex-1 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#0d0d0d] px-2.5 text-[10px] text-fg-3 sm:flex">
+                      <Search className="h-3 w-3" /> Filtrar por nome
+                    </span>
+                    <PBtn tone="ghost" size="sm" icon={History} className="hidden sm:inline-flex">Histórico do dia</PBtn>
+                  </div>
+                  <div className="mt-2 flex gap-1.5">
+                    <FilterChip active>Todos</FilterChip>
+                    <FilterChip>Ativos</FilterChip>
+                    <FilterChip>Pausados</FilterChip>
+                    <FilterChip>Filtrar selecionados</FilterChip>
+                  </div>
+
+                  {/* Tabela — rola na horizontal dentro do próprio card */}
+                  <div className="mt-3 overflow-x-auto rounded-xl border border-white/[0.06]">
+                    <table className="w-full min-w-[960px] border-collapse whitespace-nowrap text-[10px]">
+                      <thead>
+                        <tr className="bg-card text-left font-mono text-[8px] uppercase tracking-wider text-fg-3">
+                          <th className="w-6 px-2 py-2.5"><span className="block h-3 w-3 rounded-sm border border-white/20" /></th>
+                          <th className="px-2 py-2.5 font-medium">Campanha</th>
+                          <th className="px-2 py-2.5 font-medium">Veiculação</th>
+                          <th className="px-2 py-2.5 font-medium">Orçamento</th>
+                          <th className="px-2 py-2.5 text-right font-semibold text-fg-2">Gastos</th>
+                          <th className="px-2 py-2.5 text-right font-medium">Receita</th>
+                          <th className="px-2 py-2.5 text-right font-medium">Lucro</th>
+                          <th className="px-2 py-2.5 text-right font-medium">ROAS</th>
+                          <th className="px-2 py-2.5 text-right font-medium">Vendas</th>
+                          <th className="px-2 py-2.5 text-right font-medium">CPA</th>
+                          <th className="px-2 py-2.5 text-right font-medium">CPM</th>
+                          <th className="px-2 py-2.5 text-right font-medium">Impressões</th>
+                          <th className="px-2 py-2.5 text-right font-medium">Cliques</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {CAMPAIGNS.map((c, i) => {
+                          const on = toggles[i];
+                          const profit = c.rev - c.spend;
+                          return (
+                            <tr key={c.n} className="border-t border-white/[0.05]">
+                              <td className="px-2 py-2.5"><span className="block h-3 w-3 rounded-sm border border-white/20" /></td>
+                              <td className="w-[200px] min-w-[200px] px-2 py-2.5">
+                                <span className="flex items-start gap-1">
+                                  <span className="line-clamp-2 whitespace-normal font-medium leading-snug">{c.n}</span>
+                                  <Pencil className="mt-0.5 h-2.5 w-2.5 shrink-0 text-fg-3" />
+                                </span>
+                              </td>
+                              <td className="px-2 py-2.5"><Toggle on={on} /></td>
+                              <td className="px-2 py-2.5 text-fg-3">
+                                {c.budget}
+                                {c.budget.startsWith("R$") && <span className="block text-[8px]">Diário</span>}
+                              </td>
+                              <td className="px-2 py-2.5 text-right font-semibold tabular"><Money v={c.spend} /></td>
+                              <td className="px-2 py-2.5 text-right tabular underline decoration-white/20 underline-offset-2"><Money v={c.rev} /></td>
+                              <td className={clsx("px-2 py-2.5 text-right font-semibold tabular", profit > 0 ? "text-green" : profit < 0 ? "text-red" : "")}>
+                                {c.spend === 0 && c.rev === 0 ? "R$ 0,00" : <Money v={profit} />}
+                              </td>
+                              <td className={clsx("px-2 py-2.5 text-right font-semibold tabular", c.roas === 0 ? "text-red" : c.roas < 1.5 ? "bg-red/25 text-red" : "bg-green/20 text-green")}>
+                                {c.roas.toFixed(2)}
+                              </td>
+                              <td className="px-2 py-2.5 text-right tabular underline decoration-white/20 underline-offset-2">{c.sales}</td>
+                              <td className="px-2 py-2.5 text-right tabular">{cell(c.cpa, (n) => `R$ ${BRL(n, 2)}`)}</td>
+                              <td className={clsx("px-2 py-2.5 text-right tabular", c.cpm !== null && c.cpm > 60 && "bg-red/25")}>{cell(c.cpm, (n) => `R$ ${BRL(n, 2)}`)}</td>
+                              <td className="px-2 py-2.5 text-right tabular">{BRL(c.imp)}</td>
+                              <td className="px-2 py-2.5 text-right tabular">{c.clicks}</td>
+                            </tr>
+                          );
+                        })}
+                        <tr className="border-t border-white/[0.08] bg-card font-semibold">
+                          <td className="px-2 py-2.5" />
+                          <td className="px-2 py-2.5">{CAMPAIGNS.length} itens</td>
+                          <td className="px-2 py-2.5 text-fg-3">N/A</td>
+                          <td className="px-2 py-2.5 tabular">R$ 121,00</td>
+                          <td className="px-2 py-2.5 text-right tabular"><Money v={totals.spend} /></td>
+                          <td className="px-2 py-2.5 text-right tabular"><Money v={totals.rev} /></td>
+                          <td className="px-2 py-2.5 text-right tabular text-green"><Money v={totals.rev - totals.spend} /></td>
+                          <td className="px-2 py-2.5 text-right tabular">{(totals.rev / totals.spend).toFixed(2)}</td>
+                          <td className="px-2 py-2.5 text-right tabular">{totals.sales}</td>
+                          <td className="px-2 py-2.5 text-right tabular">R$ {BRL(totals.spend / totals.sales, 2)}</td>
+                          <td className="px-2 py-2.5 text-right tabular">R$ {BRL((totals.spend / totals.imp) * 1000, 2)}</td>
+                          <td className="px-2 py-2.5 text-right tabular">{BRL(totals.imp)}</td>
+                          <td className="px-2 py-2.5 text-right tabular">{totals.clicks}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </Window>
-
-              <div className="panel p-4">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-semibold">Investimento × Conversões</div>
-                  <Pill>14 dias</Pill>
-                </div>
-                <AnimatePresence mode="wait">
-                  <motion.div key={active} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                    <AreaChart id={`meta-${active}`} data={convSeries} data2={spendSeries} width={320} height={120} color="#FA0A15" color2="#0866FF" className="mt-3" showGrid={false} />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { l: "CPA", v: c.spend / c.conv, p: "R$ ", d: 2 },
-                  { l: "CTR", v: (c.clicks / (c.clicks * 18)) * 100, s: "%", d: 2 },
-                  { l: "ROAS", v: (c.conv * 47) / c.spend, d: 2 },
-                ].map((k) => (
-                  <div key={k.l} className="panel p-3">
-                    <div className="text-[10px] text-fg-3">{k.l}</div>
-                    <div className="mt-0.5 font-mono text-sm tabular">
-                      {k.p}
-                      {BRL(k.v, k.d)}
-                      {k.s}
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </Reveal>
         </div>
@@ -543,4 +582,3 @@ export function MetaAds() {
     </Section>
   );
 }
-

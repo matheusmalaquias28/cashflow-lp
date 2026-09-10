@@ -6,9 +6,10 @@ import { Compare } from "@/components/sections/Compare";
 import { OffersOverview, OfferConfig, MetaAds } from "@/components/sections/OffersSuite";
 import { Waterfall, Ledger, Commitments } from "@/components/sections/Finance";
 import { Integrations } from "@/components/sections/Integrations";
-import { Manifesto, Pricing, Faq, FinalCta, Footer } from "@/components/sections/Closing";
+import { Manifesto, Pricing, Faq, FinalCta } from "@/components/sections/Closing";
 import { Features } from "@/components/sections/Features";
 import { LampGlow } from "@/components/ui/lamp";
+import { CinematicFooter } from "@/components/ui/motion-footer";
 
 export default function Page() {
   return (
@@ -31,7 +32,7 @@ export default function Page() {
       <Pricing />
       <Faq />
       <FinalCta />
-      <Footer />
+      <CinematicFooter />
     </main>
   );
 }

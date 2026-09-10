@@ -28,6 +28,7 @@ export function Hero() {
         <video
           className="absolute inset-0 h-full w-full object-contain object-bottom sm:hidden"
           src="/video/bg-video-mobile-cash.mp4"
+          poster="/video/poster-mobile.webp"
           autoPlay
           loop
           muted
@@ -38,6 +39,7 @@ export function Hero() {
         <video
           className="absolute inset-y-0 right-0 hidden h-full w-full bg-[#020300] object-contain object-right [clip-path:inset(0_4px)] sm:block"
           src="/video/video-bg-desktop-cashflow.mp4"
+          poster="/video/poster-desktop.webp"
           autoPlay
           loop
           muted
@@ -64,14 +66,14 @@ export function Hero() {
           as="h1"
           text="Sua operação de Lowticket. // *Sob *controle."
           delay={0.4}
-          className="display mt-6 max-w-5xl text-balance text-[40px] sm:mt-8 sm:text-6xl md:text-7xl lg:text-[5.5rem]"
+          className="display mt-6 max-w-5xl text-balance text-[40px] sm:mt-8 sm:text-6xl md:text-7xl lg:max-w-[clamp(23rem,calc(75.5vw-528px),35.5rem)] lg:text-[clamp(3.5rem,calc(11.875vw-85px),5.5rem)]"
         />
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 max-w-2xl text-balance text-sm leading-relaxed text-fg-2 sm:mt-7 sm:text-lg md:text-xl"
+          className="mt-5 max-w-2xl text-balance text-sm leading-relaxed text-fg-2 sm:mt-7 sm:max-w-sm sm:text-lg md:max-w-md md:text-xl lg:max-w-[clamp(22rem,calc(75.5vw-540px),35rem)]"
         >
           <span className="text-fg">Vendas, tráfego, ofertas e financeiro em um único lugar.</span> Tenha uma visão
           clara do que está acontecendo em cada oferta e tome decisões com dados reais, sem depender de

@@ -3,19 +3,10 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useRef, useState } from "react";
 import clsx from "clsx";
-import { Activity, SlidersHorizontal, GitCompare, Wallet, Bell, SunMoon, Check, Plus, Sun, Moon, ArrowUpRight, TrendingUp } from "lucide-react";
+import { Activity, SlidersHorizontal, GitCompare, Wallet, Bell, SunMoon, Sun, Moon, ArrowUpRight, Zap, Clock, DollarSign, BarChart3, Trophy, RefreshCw, Search, Filter, Eye, Volume2 } from "lucide-react";
 import { Container, Section, SectionHeader } from "../ui/primitives";
-import { BRL, PlatformDot } from "../mock/atoms";
-import {
-  BentoCard,
-  EASE,
-  Rolling,
-  ScrollingAreaChart,
-  advanceSeries,
-  makeSeed,
-  useLiveBeat,
-  useLiveInterval,
-} from "../mock/bento";
+import { BentoCard, EASE, Rolling, useLiveBeat, useLiveInterval } from "../mock/bento";
+import { FeedRow, FilterChip, HourBars, Label, LiveDot, Money, SelectBox, StatusPill, TierBar, Toggle, type Sale } from "../mock/product";
 import { OFFER } from "@/lib/data";
 
 /* =====================================================================
@@ -107,106 +98,122 @@ export function Features() {
 }
 
 /* =====================================================================
-   Card 1 — live dashboard: revenue climbing, chart advancing, sales landing
+   Card 1 — "Ao vivo": feed de vendas em tempo real
    ===================================================================== */
 
-const SALE_POOL = [
-  { platform: "Kiwify", offer: OFFER.desafio.name, value: 47 },
-  { platform: "Hotmart", offer: OFFER.violao.name, value: 97 },
-  { platform: "Cakto", offer: OFFER.rotina.name, value: 37 },
-  { platform: "Ticto", offer: OFFER.desafio.name, value: 47 },
-  { platform: "Kirvano", offer: OFFER.churrasco.name, value: 27 },
-  { platform: "Hubla", offer: OFFER.planner.name, value: 67 },
+const SALE_POOL: Sale[] = [
+  { platform: "Kiwify", offer: OFFER.desafio.name, product: OFFER.desafio.name, value: 44.65, time: "18:41:22", status: "aprovada" },
+  { platform: "Hotmart", offer: OFFER.violao.name, product: `${OFFER.violao.name} · Completo`, value: 92.15, time: "18:31:18", status: "aprovada" },
+  { platform: "Cakto", offer: "Order · Planner de Hábitos", product: OFFER.rotina.name, value: 9.9, time: "18:16:08", status: "pendente" },
+  { platform: "Kiwify", offer: "Order · Cardápio 21 Dias", product: OFFER.desafio.name, value: 12.9, time: "18:16:08", status: "pendente" },
+  { platform: "Ticto", offer: OFFER.planner.name, product: OFFER.planner.name, value: 63.65, time: "18:09:41", status: "aprovada" },
+  { platform: "Hubla", offer: OFFER.churrasco.name, product: OFFER.churrasco.name, value: 25.65, time: "17:58:03", status: "aprovada" },
 ];
 
-const CHART_MS = 1200;
-const ROW = 52;
+const HOURS_BASE = [0, 0, 0, 0, 0, 0, 5, 2, 7, 1, 4, 3, 1, 9, 12, 1, 3, 6, 5, 0, 0, 0, 0, 0];
+const ROW = 62;
 const FEED_SLOTS = 4;
 
 function LiveDashboard() {
-  const [series, setSeries] = useState<number[]>(() => makeSeed());
-  const [revenue, setRevenue] = useState(98762);
-  const [profit, setProfit] = useState(33239);
-  const [sales, setSales] = useState(2104);
-  const [version, setVersion] = useState(0);
-  const [feed, setFeed] = useState<{ id: number; s: (typeof SALE_POOL)[number] }[]>(() =>
-    SALE_POOL.slice(0, FEED_SLOTS).map((s, i) => ({ id: -i, s })),
-  );
+  const [approved, setApproved] = useState(49);
+  const [pending, setPending] = useState(13);
+  const [revenue, setRevenue] = useState(1108.94);
+  const [pendingRev, setPendingRev] = useState(236.32);
+  const [hours, setHours] = useState(HOURS_BASE);
+  const [feed, setFeed] = useState<{ id: number; s: Sale }[]>(() => SALE_POOL.slice(0, FEED_SLOTS).map((s, i) => ({ id: -i, s })));
   const beat = useRef(0);
 
-  const ref = useLiveInterval(CHART_MS, () => {
+  const ref = useLiveInterval(2600, () => {
     beat.current += 1;
     const id = beat.current;
-    setVersion(id);
-
-    // Curva avança um passo a cada batida — random walk suave e limitado.
-    setSeries((prev) => advanceSeries(prev, id));
-
-    // Vendas entram a cada duas batidas.
-    if (id % 2 === 0) {
-      const sale = SALE_POOL[(id / 2) % SALE_POOL.length];
-      setFeed((f) => [{ id, s: sale }, ...f].slice(0, FEED_SLOTS));
+    const sale = SALE_POOL[id % SALE_POOL.length];
+    setFeed((f) => [{ id, s: sale }, ...f].slice(0, FEED_SLOTS));
+    if (sale.status === "aprovada") {
+      setApproved((c) => c + 1);
       setRevenue((r) => r + sale.value);
-      setProfit((pr) => pr + Math.round(sale.value * 0.42));
-      setSales((c) => c + 1);
+      setHours((h) => h.map((v, i) => (i === 18 ? v + 1 : v)));
+    } else {
+      setPending((c) => c + 1);
+      setPendingRev((r) => r + sale.value);
     }
   });
 
+  const total = hours.reduce((a, b) => a + b, 0);
+
   return (
-    <div ref={ref} className="flex h-full flex-col gap-4">
-      {/* KPIs */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
-        <Kpi label="Faturamento" value={revenue} prefix="R$ " trend="+18,4%" />
-        <Kpi label="Lucro líquido" value={profit} prefix="R$ " trend="+24,9%" accent />
-        <Kpi label="Vendas" value={sales} trend="+12,1%" />
+    <div ref={ref} className="flex h-full flex-col gap-3">
+      {/* Cabeçalho da tela */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-red/15 text-red">
+            <Activity className="h-4 w-4" />
+          </span>
+          <div>
+            <div className="flex items-center gap-2 text-[14px] font-bold tracking-tight">
+              Feed de Vendas
+              <span className="flex items-center gap-1 font-mono text-[8.5px] font-semibold uppercase tracking-wider text-red">
+                <LiveDot /> Ao vivo
+              </span>
+            </div>
+            <div className="text-[9.5px] text-fg-3">Acompanhe cada venda em tempo real</div>
+          </div>
+        </div>
+        <div className="hidden items-center gap-2 sm:flex">
+          <Volume2 className="h-3 w-3 text-fg-3" />
+          <Toggle on />
+          <Eye className="h-3 w-3 text-fg-3" />
+          <span className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[8.5px] text-fg-2">
+            <Rolling value={63 + approved + pending - 62} /> eventos
+          </span>
+        </div>
       </div>
 
-      <div className="grid flex-1 gap-3 lg:grid-cols-[1.5fr_1fr]">
-        {/* Chart */}
-        <div className="relative flex flex-col overflow-hidden rounded-xl border border-white/[0.07] bg-black/30 p-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-fg-2">Faturamento · hoje</span>
-            <span className="flex items-center gap-1 font-mono text-[10px] text-green">
-              <TrendingUp className="h-3 w-3" /> ao vivo
-            </span>
-          </div>
+      {/* KPIs */}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <Kpi label="Vendas Aprovadas" value={<Rolling value={approved} />} tone="text-green" icon={Zap} />
+        <Kpi label="Vendas Pendentes" value={<Rolling value={pending} />} tone="text-amber" icon={Clock} />
+        <Kpi label="Receita Aprovada" value={<Rolling value={revenue} prefix="R$ " digits={2} />} tone="text-green" icon={DollarSign} />
+        <Kpi label="Receita Pendente" value={<Rolling value={pendingRev} prefix="R$ " digits={2} />} tone="text-fg" icon={DollarSign} />
+      </div>
 
-          <ScrollingAreaChart
-            series={series}
-            version={version}
-            ms={CHART_MS}
-            id="feat"
-            className="mt-2 flex-1"
-          />
+      <div className="grid flex-1 gap-3 lg:grid-cols-[1.35fr_1fr]">
+        {/* Ritmo de vendas */}
+        <div className="relative flex flex-col overflow-hidden rounded-xl border border-white/[0.06] bg-card p-3">
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold">
+            <BarChart3 className="h-3 w-3 text-red" /> Ritmo de Vendas Hoje
+          </div>
+          <HourBars data={hours} height={200} max={14} className="mt-3 flex-1" />
+          <div className="mt-2 text-[9px] text-fg-3">
+            Total: <span className="font-semibold text-fg">{total}</span> vendas hoje.
+          </div>
         </div>
 
-        {/* Feed — fixed slots, so new sales never resize the card */}
-        <div className="relative flex flex-col overflow-hidden rounded-xl border border-white/[0.07] bg-black/30 p-3">
+        {/* Últimas vendas — slots fixos, o card nunca muda de tamanho */}
+        <div className="relative flex flex-col overflow-hidden rounded-xl border border-white/[0.06] bg-card p-3">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-fg-2">Vendas entrando</span>
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inset-0 rounded-full bg-red animate-pulse-dot" />
-              <span className="h-1.5 w-1.5 rounded-full bg-red" />
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold">
+              <Zap className="h-3 w-3 text-amber" /> Últimas Vendas
+              <StatusPill tone="purple">
+                <Trophy className="h-2 w-2" /> Ouro
+              </StatusPill>
+            </span>
+            <span className="flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-0.5 text-[8.5px] text-fg-2">
+              <RefreshCw className="h-2.5 w-2.5" /> Atualizar
             </span>
           </div>
-          <div className="relative mt-2 overflow-hidden" style={{ height: ROW * FEED_SLOTS }}>
+          <TierBar pct={96} />
+          <div className="relative mt-2 overflow-hidden" style={{ height: ROW * FEED_SLOTS - 6 }}>
             <AnimatePresence initial={false}>
               {feed.map(({ id, s: sale }, i) => (
                 <motion.div
                   key={id}
-                  className="absolute inset-x-0 top-0 flex items-center gap-2 rounded-lg border border-white/[0.07] bg-white/[0.04] px-2.5"
-                  style={{ height: ROW - 6 }}
+                  className="absolute inset-x-0 top-0"
                   initial={{ opacity: 0, y: -ROW, scale: 0.96 }}
                   animate={{ opacity: 1, y: i * ROW, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.55, ease: EASE }}
                 >
-                  <PlatformDot name={sale.platform} />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[11px] font-medium leading-tight">{sale.offer}</span>
-                    <span className="block truncate text-[9px] leading-tight text-fg-3">{sale.platform}</span>
-                  </span>
-                  <span className="font-mono text-[11px] tabular text-green">+R$ {BRL(sale.value)}</span>
+                  <FeedRow sale={sale} />
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -220,49 +227,40 @@ function LiveDashboard() {
 function Kpi({
   label,
   value,
-  prefix = "",
-  trend,
-  accent,
+  tone,
+  icon: Icon,
 }: {
   label: string;
-  value: number;
-  prefix?: string;
-  trend: string;
-  accent?: boolean;
+  value: React.ReactNode;
+  tone: string;
+  icon: React.ComponentType<{ className?: string }>;
 }) {
   return (
-    <div
-      className={clsx(
-        "relative overflow-hidden rounded-xl border p-3",
-        accent ? "border-green/30 bg-green/[0.07]" : "border-white/[0.07] bg-white/[0.03]",
-      )}
-    >
-      {accent && <div className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-green/30 blur-2xl" />}
-      <div className="text-[10px] text-fg-3">{label}</div>
-      <div className="mt-0.5 whitespace-nowrap text-[13px] font-bold tracking-tight sm:text-base lg:text-lg">
-        <Rolling value={value} prefix={prefix} />
-      </div>
-      <div className="mt-0.5 flex items-center gap-0.5 font-mono text-[9px] tabular text-green">
-        <ArrowUpRight className="h-2.5 w-2.5" />
-        {trend}
-      </div>
+    <div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-card p-3">
+      <span className={clsx("flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.05]", tone)}>
+        <Icon className="h-3 w-3" />
+      </span>
+      <span className="min-w-0">
+        <span className="block truncate text-[9.5px] text-fg-3">{label}</span>
+        <span className={clsx("block whitespace-nowrap text-[14px] font-bold tracking-tight", tone)}>{value}</span>
+      </span>
     </div>
   );
 }
 
 /* =====================================================================
-   Card 2 — notifications arriving on a loop
+   Card 2 — notificações: a pré-visualização que chega no celular
    ===================================================================== */
 
-const NOTIF_ROW = 56;
+const NOTIF_ROW = 58;
 
 const NOTIFS = [
-  { t: `${OFFER.desafio.name} passou de 400 vendas`, tone: "green" },
-  { t: `ROAS do ${OFFER.churrasco.short} caiu para 1,42`, tone: "red" },
-  { t: "Fatura do Meta Ads vence hoje", tone: "white" },
-  { t: `${OFFER.rotina.name} bateu recorde de lucro`, tone: "green" },
-  { t: `Reembolso registrado em ${OFFER.violao.name}`, tone: "red" },
-  { t: "Novo repasse da Kiwify caiu no caixa", tone: "green" },
+  { emoji: "💰", title: "Nova venda!", body: `${OFFER.violao.name} — R$ 92,15` },
+  { emoji: "⏳", title: "Venda pendente", body: `${OFFER.desafio.name} — R$ 44,65` },
+  { emoji: "🏆", title: "Meta batida!", body: "Você passou de R$ 1.000 hoje" },
+  { emoji: "💰", title: "Nova venda!", body: `${OFFER.planner.name} — R$ 63,65` },
+  { emoji: "⚠️", title: "ROAS caindo", body: `${OFFER.churrasco.name} · 0,82x nos últimos 3 dias` },
+  { emoji: "💰", title: "Nova venda!", body: `${OFFER.rotina.name} — R$ 35,15` },
 ];
 
 function LiveNotifications() {
@@ -279,45 +277,41 @@ function LiveNotifications() {
     setItems((prev) => [{ id, n: NOTIFS[id % NOTIFS.length] }, ...prev].slice(0, 3));
   });
 
-  const AGE = ["agora", "há 2 min", "há 5 min"];
-
   return (
-    // Fixed height with absolutely placed rows: arrivals never resize the card.
-    <div ref={ref} className="relative overflow-hidden" style={{ height: 3 * NOTIF_ROW }}>
-      <AnimatePresence initial={false}>
-        {items.map(({ id, n }, i) => (
-          <motion.div
-            key={id}
-            className="absolute inset-x-0 top-0 flex items-start gap-2.5 overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 backdrop-blur"
-            style={{ height: NOTIF_ROW - 8 }}
-            initial={{ opacity: 0, x: 36, filter: "blur(4px)" }}
-            animate={{ opacity: 1 - i * 0.26, x: 0, y: i * NOTIF_ROW, filter: "blur(0px)" }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: EASE }}
-          >
-            {i === 0 && (
-              <motion.span
-                className="absolute inset-0 bg-red/15"
-                initial={{ opacity: 1 }}
-                animate={{ opacity: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-              />
-            )}
-            <span
-              className={clsx(
-                "relative mt-3.5 h-1.5 w-1.5 shrink-0 rounded-full",
-                n.tone === "green" && "bg-green",
-                n.tone === "red" && "bg-red",
-                n.tone === "white" && "bg-white/50",
+    <div ref={ref}>
+      <Label className="mb-2">Pré-visualização</Label>
+      {/* Altura fixa com linhas posicionadas: chegadas nunca mudam o tamanho do card. */}
+      <div className="relative overflow-hidden" style={{ height: 3 * NOTIF_ROW }}>
+        <AnimatePresence initial={false}>
+          {items.map(({ id, n }, i) => (
+            <motion.div
+              key={id}
+              className="absolute inset-x-0 top-0 flex items-center gap-3 overflow-hidden rounded-xl border border-white/[0.08] bg-card px-3"
+              style={{ height: NOTIF_ROW - 8 }}
+              initial={{ opacity: 0, x: 36, filter: "blur(4px)" }}
+              animate={{ opacity: 1 - i * 0.28, x: 0, y: i * NOTIF_ROW, filter: "blur(0px)" }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease: EASE }}
+            >
+              {i === 0 && (
+                <motion.span
+                  className="absolute inset-0 bg-green/15"
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 0 }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                />
               )}
-            />
-            <span className="relative flex min-w-0 flex-1 flex-col justify-center self-stretch">
-              <span className="line-clamp-2 text-[11px] font-medium leading-snug">{n.t}</span>
-              <span className="mt-0.5 text-[9px] text-fg-3">{AGE[i]}</span>
-            </span>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+              <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.05] text-[15px]">
+                {n.emoji}
+              </span>
+              <span className="relative min-w-0 flex-1 leading-tight">
+                <span className="block truncate text-[12px] font-bold">{n.title}</span>
+                <span className="block truncate text-[10px] text-fg-2">{n.body}</span>
+              </span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
@@ -381,114 +375,129 @@ function LiveFinance() {
 }
 
 /* =====================================================================
-   Card 4 — offers comparison cycling between periods
+   Card 4 — comparação: Lado A × Lado B, período a período
    ===================================================================== */
 
 const PERIODS = [
-  { label: "Julho", a: 68, b: 52, av: "R$ 28.4k", bv: "R$ 21.7k" },
-  { label: "Agosto", a: 84, b: 61, av: "R$ 35.1k", bv: "R$ 25.4k" },
-  { label: "Setembro", a: 92, b: 77, av: "R$ 38.5k", bv: "R$ 32.2k" },
+  { label: "Últimos 7 dias", a: 466.9, b: 55.24 },
+  { label: "Últimos 30 dias", a: 1842.3, b: 612.75 },
+  { label: "Hoje", a: 489.6, b: 66.3 },
 ];
 
 function LiveCompare() {
-  const { ref, tick } = useLiveBeat(2600);
+  const { ref, tick } = useLiveBeat(2800);
   const p = PERIODS[tick % PERIODS.length];
+  const diff = ((p.a - p.b) / p.b) * 100;
+  const aWins = p.a >= p.b;
 
   return (
-    <div ref={ref} className="flex h-full flex-col gap-3">
+    <div ref={ref} className="flex h-full flex-col gap-2.5">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-fg-2">Faturamento por oferta</span>
-        <div className="flex gap-1">
-          {PERIODS.map((x, i) => (
-            <span
-              key={x.label}
-              className={clsx(
-                "h-1 w-5 rounded-full transition-colors duration-500",
-                i === tick % PERIODS.length ? "bg-red" : "bg-white/15",
-              )}
-            />
-          ))}
-        </div>
+        <SelectBox className="h-7 text-[10px]">{p.label}</SelectBox>
+        <StatusPill tone="green">Lado A vence</StatusPill>
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={p.label}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.4 }}
-          className="font-mono text-[10px] uppercase tracking-wider text-fg-3"
-        >
-          {p.label}
-        </motion.div>
-      </AnimatePresence>
+      <div className="grid flex-1 grid-cols-[1fr_auto_1fr] items-stretch gap-2">
+        {(["a", "b"] as const).map((side, idx) => {
+          const win = side === "a" ? aWins : !aWins;
+          const v = side === "a" ? p.a : p.b;
+          const pct = side === "a" ? diff : ((p.b - p.a) / p.a) * 100;
+          return (
+            <div
+              key={side}
+              className={clsx(
+                "relative flex flex-col rounded-xl border border-white/[0.06] border-t-2 bg-card p-3",
+                side === "a" ? "border-t-blue" : "border-t-orange",
+              )}
+              style={{ order: idx * 2 }}
+            >
+              <div className="flex items-start justify-between gap-1">
+                <span className="min-w-0">
+                  <span className="block truncate text-[10.5px] font-bold">{side === "a" ? OFFER.desafio.name : OFFER.churrasco.name}</span>
+                  <span className="block text-[8px] text-fg-3">{p.label}</span>
+                </span>
+                {win && <StatusPill tone="green" className="shrink-0">🏆 Vence</StatusPill>}
+              </div>
+              <Label className="mt-2">Lucro</Label>
+              <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                <span className="text-[17px] font-bold tracking-tight text-green">
+                  <Rolling value={v} prefix="R$ " digits={2} />
+                </span>
+                <span className={clsx("rounded-full px-1.5 py-[1px] font-mono text-[8px]", pct >= 0 ? "bg-green/15 text-green" : "bg-red/15 text-red")}>
+                  {pct >= 0 ? "↑" : "↓"} {Math.abs(pct).toFixed(1)}%
+                </span>
+              </div>
+            </div>
+          );
+        })}
+        <span className="self-center rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-1 font-mono text-[8px] uppercase tracking-wider text-fg-3" style={{ order: 1 }}>
+          Versus
+        </span>
+      </div>
 
-      <div className="mt-auto space-y-3">
-        {[
-          { n: OFFER.desafio.name, w: p.a, v: p.av, red: true },
-          { n: OFFER.violao.name, w: p.b, v: p.bv, red: false },
-        ].map((row) => (
-          <div key={row.n}>
-            <div className="mb-1 flex justify-between text-[10px]">
-              <span className="text-fg-2">{row.n}</span>
-              <span className="font-mono tabular text-fg-3">{row.v}</span>
-            </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-white/[0.06]">
-              <motion.div
-                className={clsx("h-full rounded-full", row.red ? "bg-red shadow-[0_0_16px_rgba(250,10,21,.6)]" : "bg-white/30")}
-                animate={{ width: `${row.w}%` }}
-                transition={{ duration: 1.1, ease: EASE }}
-              />
-            </div>
-          </div>
-        ))}
+      <div>
+        <div className="mb-1 flex justify-between text-[9px]">
+          <span className="text-fg-3">De onde veio a diferença</span>
+          <span className="font-mono text-green">+<Money v={p.a - p.b} /></span>
+        </div>
+        <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+          <motion.div
+            className="h-full rounded-full bg-green"
+            animate={{ width: `${Math.min(100, (Math.abs(p.a - p.b) / Math.max(p.a, p.b)) * 100)}%` }}
+            transition={{ duration: 1.1, ease: EASE }}
+          />
+        </div>
       </div>
     </div>
   );
 }
 
 /* =====================================================================
-   Card 5 — filters toggling themselves
+   Card 5 — filtros: chips de status e busca, como na Gestão de Ofertas
    ===================================================================== */
 
-const CHIPS = ["Kiwify", "Hotmart", "30 dias", OFFER.desafio.short, "Pix", "Order bump", "ROAS > 2"];
+const STATUS = [
+  { l: "Todas", n: 6 },
+  { l: "Ativa", n: 5 },
+  { l: "Em pausa", n: 1 },
+  { l: "Sem status", n: 0 },
+];
 const FILTER_STEPS = [
-  ["Kiwify", "30 dias"],
-  ["Kiwify", "30 dias", OFFER.desafio.short],
-  ["Hotmart", "Pix"],
-  ["30 dias", "ROAS > 2", "Order bump"],
+  { status: 0, period: "Hoje", sort: "Maior Lucro", results: 6 },
+  { status: 1, period: "Últimos 7 dias", sort: "Maior Lucro", results: 5 },
+  { status: 1, period: "Últimos 7 dias", sort: "Maior ROAS", results: 5 },
+  { status: 2, period: "Últimos 30 dias", sort: "Maior Faturamento", results: 1 },
 ];
 
 function LiveFilters() {
   const { ref, tick } = useLiveBeat(2500);
-  const active = FILTER_STEPS[tick % FILTER_STEPS.length];
-  const results = 12 + active.length * 7;
+  const step = FILTER_STEPS[tick % FILTER_STEPS.length];
 
   return (
-    <div ref={ref} className="flex h-full flex-col justify-between">
-      <div className="flex flex-wrap content-start gap-1.5">
-        {CHIPS.map((c) => {
-          const on = active.includes(c);
-          return (
-            <motion.span
-              key={c}
-              animate={{
-                backgroundColor: on ? "rgba(250,10,21,0.16)" : "rgba(255,255,255,0.03)",
-                borderColor: on ? "rgba(250,10,21,0.5)" : "rgba(255,255,255,0.09)",
-                color: on ? "#ffffff" : "rgba(255,255,255,0.4)",
-              }}
-              transition={{ duration: 0.5, ease: EASE }}
-              className="flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px]"
-            >
-              {on ? <Check className="h-3 w-3 text-red" /> : <Plus className="h-3 w-3" />}
-              {c}
-            </motion.span>
-          );
-        })}
+    <div ref={ref} className="flex h-full flex-col justify-between gap-3">
+      <div className="flex flex-wrap gap-1.5">
+        {STATUS.map((s, i) => (
+          <FilterChip key={s.l} active={i === step.status} count={s.n}>
+            {s.l}
+          </FilterChip>
+        ))}
       </div>
-      <div className="mt-3 flex items-baseline gap-1.5 border-t border-white/[0.07] pt-3 text-[11px] text-fg-3">
-        <Rolling value={results} className="font-mono text-base font-semibold text-fg" duration={500} />
+      <div className="flex h-8 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#0d0d0d] px-2.5 text-[10px] text-fg-3">
+        <Search className="h-3 w-3" /> Buscar oferta pelo nome…
+        <Filter className="ml-auto h-3 w-3" />
+      </div>
+      <div className="grid grid-cols-2 gap-1.5">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div key={step.period} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <SelectBox className="h-7 w-full text-[10px]">{step.period}</SelectBox>
+          </motion.div>
+          <motion.div key={step.sort} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <SelectBox className="h-7 w-full text-[10px]">{step.sort}</SelectBox>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <div className="flex items-baseline gap-1.5 border-t border-white/[0.07] pt-3 text-[11px] text-fg-3">
+        <Rolling value={step.results} className="font-mono text-base font-semibold text-fg" duration={500} />
         ofertas encontradas
       </div>
     </div>

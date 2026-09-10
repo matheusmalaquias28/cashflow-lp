@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { LiveDashboard } from "@/components/dashboard/LiveDashboard";
+import { DashboardGeral } from "@/components/mock/DashboardGeral";
 
 export const metadata: Metadata = {
-  title: "Ao vivo — Cashflow",
+  title: "Dashboard Geral — Cashflow",
   robots: { index: false, follow: false },
 };
 
 export default function DashboardPage() {
-  return <LiveDashboard />;
+  return <DashboardGeral full />;
 }

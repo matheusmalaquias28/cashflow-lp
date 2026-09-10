@@ -106,7 +106,7 @@ function Hub({
   const gid = `hub-glow-${id}`;
 
   return (
-    <div className={clsx("relative mx-auto w-full max-w-5xl py-6", className)}>
+    <div className={clsx("relative mx-auto w-full max-w-5xl py-6 min-[1921px]:max-w-[1400px]", className)}>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" fill="none">
         <defs>
           <radialGradient id={gid} cx="50%" cy="50%" r="50%">

@@ -13,6 +13,15 @@
   --color-red: #fa0a15;
   --color-red-deep: #830006;
   --color-green: #22c55e;
+  /* Paleta do produto (dashboards reais) */
+  --color-cyan: #22d3ee;
+  --color-orange: #ffa726;
+  --color-amber: #f5b301;
+  --color-blue: #3b82f6;
+  --color-purple: #a855f7;
+  --color-app: #0b0b0b;
+  --color-app-2: #0e0e0e;
+  --color-card: #141414;
 
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
@@ -23,6 +32,9 @@
   --animate-marquee: marquee 40s linear infinite;
   --animate-pulse-dot: pulse-dot 1.8s ease-out infinite;
   --animate-dash: dash 2.4s linear infinite;
+  --animate-footer-breathe: footer-breathe 8s ease-in-out infinite alternate;
+  --animate-footer-marquee: footer-marquee 40s linear infinite;
+  --animate-footer-heartbeat: footer-heartbeat 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
 
   @keyframes marquee {
     from {
@@ -173,12 +185,27 @@ body {
   0%,
   70%,
   100% {
-    opacity: 0.25;
-    transform: scale(0.85);
+    opacity: 0.55;
+    transform: scale(0.9);
   }
   35% {
     opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* No hover a onda fica quase sólida e um pouco maior, para ler bem quando o
+   bloco se abre na largura toda do botão. */
+@keyframes bd-dot-wave-strong {
+  0%,
+  70%,
+  100% {
+    opacity: 0.8;
     transform: scale(1);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.18);
   }
 }
 
@@ -186,6 +213,11 @@ body {
   transform-box: fill-box;
   transform-origin: center;
   animation: bd-dot-wave 1.4s ease-in-out infinite;
+}
+
+.group\/btn:hover .bd-dot {
+  animation-name: bd-dot-wave-strong;
+  animation-duration: 1.1s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -212,4 +244,75 @@ h2,
 h3,
 h4 {
   text-wrap: balance;
+}
+
+@keyframes footer-breathe {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.55; }
+  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+}
+
+@keyframes footer-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes footer-heartbeat {
+  0%, 100% { transform: scale(1); }
+  15%, 45% { transform: scale(1.22); }
+  30% { transform: scale(1); }
+}
+
+/* ---------- Footer cinematográfico ---------- */
+
+@utility glass-pill {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
+  border: 1px solid var(--color-line);
+  box-shadow:
+    0 10px 30px -10px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background 0.4s var(--ease-out-expo), border-color 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo);
+}
+
+@utility footer-grid {
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+}
+
+/* Palavra gigante: contorno + degradê recortado no texto. */
+@utility footer-giant {
+  /* 8 letras: 26vw (da referência, para 6 letras) estouraria a largura. */
+  font-size: 19vw;
+  line-height: 0.75;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+@utility footer-shine {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.62) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.14));
+}
+
+.glass-pill:hover {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-color: var(--color-line-2);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.16);
+  color: var(--color-fg);
 }
