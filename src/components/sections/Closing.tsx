@@ -157,7 +157,7 @@ function PlanButton({ p }: { p: Plan }) {
         "flex h-12 w-full items-center justify-center rounded-xl px-4 text-center text-[13px] font-bold leading-tight",
         "transition-[transform,background-color,box-shadow] duration-300 ease-out-expo active:scale-[0.98]",
         p.highlight
-          ? "bg-red text-white shadow-[0_10px_30px_-10px_rgba(250,10,21,.9)] hover:bg-[#ff2733] hover:shadow-[0_14px_38px_-10px_rgba(250,10,21,1)]"
+          ? "bg-green text-[#052e16] shadow-[0_10px_30px_-10px_rgba(34,197,94,.85)] hover:bg-[#2ee36b] hover:shadow-[0_14px_38px_-10px_rgba(34,197,94,1)]"
           : "bg-white text-[#0a0a0b] hover:bg-white/90",
       )}
     >
@@ -175,18 +175,18 @@ function PlanCard({ p }: { p: Plan }) {
         "h-full transition-transform duration-500 ease-out-expo hover:-translate-y-1",
         // O Diamond ganha escala e sombra maiores — cresce sem empurrar os vizinhos.
         p.highlight &&
-          "border-red/45 bg-red/[0.05] shadow-[0_0_0_1px_rgba(250,10,21,.3),0_40px_110px_-40px_rgba(250,10,21,.85)] lg:z-10 lg:scale-[1.05]",
+          "border-red/45 shadow-[0_0_0_1px_rgba(250,10,21,.3),0_40px_110px_-40px_rgba(250,10,21,.85)] lg:z-10 lg:scale-[1.05]",
       )}
     >
       {p.highlight && (
         <div className="pointer-events-none absolute -top-px left-1/2 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-red to-transparent" />
       )}
 
-      <PricingCard.Header className={clsx(p.highlight && "border-red/25 bg-[#17090b]")}>
+      <PricingCard.Header className={clsx(p.highlight && "border-red/25")}>
         <PricingCard.Plan>
           <PricingCard.PlanName className={clsx(p.highlight && "text-red")}>
-            <Icon className="h-4 w-4" />
-            {p.name}
+            <Icon className={clsx("h-[18px] w-[18px]", p.highlight && "animate-diamond-glint")} />
+            {p.highlight ? <span className="diamond-text">{p.name}</span> : p.name}
           </PricingCard.PlanName>
           {p.highlight && (
             <PricingCard.Badge className="border-green/50 bg-green/15 font-semibold text-green">Mais escolhido</PricingCard.Badge>
@@ -230,7 +230,7 @@ function MasterCard({ p }: { p: Plan }) {
         <PricingCard.Header className="mb-0! flex flex-col lg:w-[340px] lg:shrink-0">
           <PricingCard.Plan>
             <PricingCard.PlanName>
-              <Icon className="h-4 w-4" />
+              <Icon className="h-[18px] w-[18px]" />
               {p.name}
             </PricingCard.PlanName>
           </PricingCard.Plan>

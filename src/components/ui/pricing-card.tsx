@@ -50,7 +50,7 @@ export function Plan({ className, ...props }: ComponentProps<"div">) {
 export function PlanName({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
-      className={clsx("flex items-center gap-2 font-mono text-sm uppercase tracking-[0.16em] text-fg-2", className)}
+      className={clsx("flex items-center gap-2 font-mono text-[15px] font-bold uppercase tracking-[0.12em] text-fg", className)}
       {...props}
     />
   );

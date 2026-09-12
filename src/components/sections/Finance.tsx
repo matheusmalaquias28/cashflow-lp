@@ -9,6 +9,31 @@ import { Pill, Window, BRL } from "../mock/atoms";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+/**
+ * As três seções do financeiro dividem um único fundo branco, sem emenda
+ * entre elas. O tema claro redefine os tokens de cor para o escopo inteiro.
+ */
+export function FinanceBlock() {
+  return (
+    <div className="theme-light relative isolate bg-white text-fg">
+      {/* Malha sutil para o branco não ficar chapado */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(10,10,11,.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(10,10,11,.05) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+          maskImage: "radial-gradient(ellipse 75% 55% at 50% 22%, black, transparent 78%)",
+        }}
+      />
+      <Waterfall />
+      <Ledger />
+      <Commitments />
+    </div>
+  );
+}
+
 /* =====================================================================
    1) Faturamento não é caixa — waterfall
    ===================================================================== */
@@ -61,7 +86,6 @@ export function Waterfall() {
 
   return (
     <Section id="financeiro" className="overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-line-2 to-transparent" />
       <Container>
         <SectionHeader
           eyebrow="Financeiro"
@@ -77,8 +101,10 @@ export function Waterfall() {
                 <div className="text-xs text-fg-3">Agosto · Operação Principal</div>
               </div>
               <div className="flex items-center gap-2">
-                <Pill>Faturamento R$ {BRL(STEPS[0].value)}</Pill>
-                <Pill tone={done ? "green" : "neutral"}>Caixa real R$ {BRL(COLUMNS[COLUMNS.length - 1].total)}</Pill>
+                <Pill className="bg-[#0a0a0b]/[0.06] text-fg-2">Faturamento R$ {BRL(STEPS[0].value)}</Pill>
+                <Pill tone={done ? "green" : "neutral"} className={done ? "bg-green/15 text-green" : "bg-[#0a0a0b]/[0.06] text-fg-2"}>
+                  Caixa real R$ {BRL(COLUMNS[COLUMNS.length - 1].total)}
+                </Pill>
               </div>
             </div>
 
@@ -101,9 +127,9 @@ export function Waterfall() {
                       <motion.div
                         className={clsx(
                           "absolute inset-x-0 bottom-0 overflow-hidden rounded-t-md",
-                          isEnd && "bg-green shadow-[0_0_44px_rgba(34,197,94,.45)]",
-                          isStart && "bg-white/[0.16]",
-                          c.kind === "minus" && "bg-white/[0.09]",
+                          isEnd && "bg-green shadow-[0_0_44px_rgba(21,128,61,.35)]",
+                          isStart && "bg-[#0a0a0b]/[0.14]",
+                          c.kind === "minus" && "bg-[#0a0a0b]/[0.09]",
                         )}
                         initial={{ height: 0 }}
                         animate={active ? { height: `${columnPct}%` } : { height: 0 }}
@@ -111,7 +137,7 @@ export function Waterfall() {
                       >
                         {c.kind === "minus" && (
                           <motion.div
-                            className="absolute inset-x-0 top-0 bg-red/45 ring-1 ring-inset ring-red/50"
+                            className="absolute inset-x-0 top-0 bg-red/80 ring-1 ring-inset ring-red"
                             style={{ height: `${cutPct}%` }}
                             initial={{ opacity: 0 }}
                             animate={active ? { opacity: 1 } : { opacity: 0 }}
@@ -250,7 +276,7 @@ export function Ledger() {
                       >
                         <span className="font-mono text-[10px] text-fg-3">{r.d}</span>
                         <span className="truncate font-medium">{r.l}</span>
-                        <span className="hidden rounded-full bg-white/[0.05] px-2 py-0.5 text-[10px] text-fg-3 sm:inline">{r.cat}</span>
+                        <span className="hidden rounded-full bg-fg/[0.06] px-2 py-0.5 text-[10px] text-fg-3 sm:inline">{r.cat}</span>
                         <span className={clsx("w-24 text-right font-mono tabular", r.v > 0 ? "text-green" : "text-fg")}>
                           {r.v > 0 ? "+" : "−"}R$ {BRL(Math.abs(r.v))}
                         </span>
@@ -339,7 +365,7 @@ export function Commitments() {
                       <button
                         key={b.l}
                         onClick={() => setPaid((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]))}
-                        className="group flex w-full items-center gap-3 border-b border-line/60 px-5 py-3.5 text-left transition-colors last:border-0 hover:bg-white/[0.02]"
+                        className="group flex w-full items-center gap-3 border-b border-line/60 px-5 py-3.5 text-left transition-colors last:border-0 hover:bg-fg/[0.04]"
                       >
                         <span
                           className={clsx(

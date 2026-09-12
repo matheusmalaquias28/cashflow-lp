@@ -44,7 +44,7 @@ export function Compare() {
   const done = step >= 6;
 
   return (
-    <Section className="!pt-0">
+    <Section>
       <Container>
         <SectionHeader
           eyebrow="Comparação de ofertas"

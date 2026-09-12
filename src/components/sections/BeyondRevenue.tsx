@@ -20,7 +20,13 @@ export function BeyondRevenue() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   return (
-    <>
+    <div className="theme-red relative isolate bg-[#7a0208] text-fg">
+      {/* Profundidade no vermelho, sem emendas nas bordas. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_65%_45%_at_72%_38%,rgba(250,10,21,.5),transparent_72%)]"
+      />
+
       {/* No telefone a copy rola antes e o trecho fixo carrega só o card, de modo
           que a animação comece exatamente quando ele está centralizado na tela.
           No desktop os dois dividem a mesma viewport, como antes. */}
@@ -30,7 +36,7 @@ export function BeyondRevenue() {
 
       <section ref={ref} className="relative h-[220vh] lg:h-[300vh]">
         <div className="sticky top-0 flex min-h-screen items-center overflow-hidden py-16 lg:py-24">
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_60%_at_80%_50%,rgba(131,0,6,.16),transparent_72%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_60%_at_80%_50%,rgba(255,255,255,.07),transparent_72%)]" />
           <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
             <div className="hidden lg:block">
               <Copy
@@ -48,7 +54,7 @@ export function BeyondRevenue() {
           </Container>
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
@@ -84,7 +90,7 @@ function StaticChips() {
           key={m.key}
           className={clsx(
             "rounded-full border px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider",
-            i >= 3 ? "border-green/50 bg-green/15 text-white" : "border-line bg-white/[0.03] text-fg-3",
+            i >= 3 ? "border-green/70 bg-green/25 text-white" : "border-white/25 bg-white/10 text-white/75",
           )}
         >
           {m.key}
@@ -98,10 +104,11 @@ function Chip({ label, index, progress }: { label: string; index: number; progre
   const start = 0.1 + index * 0.16;
   // Lucro e margem — o que de fato sobra — usam verde; o resto usa o vermelho da marca.
   const isResult = index >= 3;
-  const tint = isResult ? "rgba(34,197,94," : "rgba(250,10,21,";
-  const bg = useTransform(progress, [start, start + 0.08], ["rgba(255,255,255,0.03)", `${tint}0.15)`]);
-  const color = useTransform(progress, [start, start + 0.08], ["rgba(255,255,255,0.4)", "#ffffff"]);
-  const border = useTransform(progress, [start, start + 0.08], ["rgba(255,255,255,0.08)", `${tint}0.5)`]);
+  // Sobre o vermelho: o ativo "comum" vira branco translúcido e o de resultado, verde claro.
+  const tint = isResult ? "rgba(110,231,160," : "rgba(255,255,255,";
+  const bg = useTransform(progress, [start, start + 0.08], ["rgba(255,255,255,0.08)", `${tint}0.26)`]);
+  const color = useTransform(progress, [start, start + 0.08], ["rgba(255,255,255,0.7)", "#ffffff"]);
+  const border = useTransform(progress, [start, start + 0.08], ["rgba(255,255,255,0.22)", `${tint}0.85)`]);
   return (
     <motion.span
       style={{ background: bg, color, borderColor: border }}
@@ -115,8 +122,8 @@ function Chip({ label, index, progress }: { label: string; index: number; progre
 function OfferCard({ progress }: { progress: MotionValue<number> }) {
   const y = useTransform(progress, [0, 1], [40, -40]);
   return (
-    <motion.div style={{ y }} className="relative">
-      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-red-deep/15 blur-3xl" />
+    <motion.div style={{ y }} className="theme-dark relative">
+      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-black/40 blur-3xl" />
       <div className="relative overflow-hidden rounded-2xl border border-white/[0.09] bg-[#08080a]/85 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_30px_80px_-40px_rgba(0,0,0,.95)] backdrop-blur-2xl">
         {/* brilho de topo — mantém a leitura de vidro sobre a base escura */}
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/[0.06] to-transparent" />
