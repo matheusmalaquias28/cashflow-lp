@@ -47,9 +47,8 @@ export function Compare() {
     <Section>
       <Container>
         <SectionHeader
-          eyebrow="Comparação de ofertas"
-          title="Qual oferta você *escalaria?"
-          lead="Compare suas ofertas lado a lado e encontre as melhores oportunidades da operação."
+          title="No jogo real, você é obrigado a olhar além do *“Gerenciador *de *Anúncios”"
+          lead="Conheça as funcionalidades da Cashflow para acompanhar cada venda, separar o resultado das ofertas e controlar o dinheiro que entra e sai da operação."
         />
 
         <Reveal className="mx-auto mt-16 max-w-5xl min-[1921px]:max-w-[1400px]" amount={0.2}>

@@ -189,10 +189,10 @@ export function CinematicFooter() {
               as="a"
               href={CTA_PRIMARY_HREF}
               strength={0.28}
-              className="flex items-center gap-3 rounded-full border border-red/40 bg-red/[0.14] px-8 py-4 text-sm font-bold text-fg sm:px-10 sm:py-5 sm:text-base"
+              className="flex items-center gap-3 rounded-full border border-[rgba(255,97,105,0.45)] bg-[linear-gradient(180deg,#FF3B44_0%,#D40510_100%)] px-8 py-4 text-sm font-bold uppercase tracking-wide text-white shadow-[0_12px_32px_-6px_rgba(255,59,68,0.65),inset_0_1px_0_rgba(255,255,255,0.28)] transition-[transform,filter] hover:brightness-110 sm:px-10 sm:py-5 sm:text-base"
             >
-              Quero conhecer o Cashflow
-              <span className="text-red">→</span>
+              Quero garantir meu acesso
+              <span className="text-white">→</span>
             </Magnetic>
 
             <div className="mt-1 flex flex-wrap justify-center gap-2 sm:gap-3">

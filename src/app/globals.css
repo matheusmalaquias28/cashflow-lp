@@ -30,6 +30,7 @@
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 
   --animate-marquee: marquee 40s linear infinite;
+  --animate-marquee-slow: marquee 60s linear infinite;
   --animate-pulse-dot: pulse-dot 1.8s ease-out infinite;
   --animate-dash: dash 2.4s linear infinite;
   --animate-footer-breathe: footer-breathe 8s ease-in-out infinite alternate;

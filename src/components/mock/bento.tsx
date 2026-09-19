@@ -368,7 +368,7 @@ export function BentoCard({
             </span>
             <h3 className="font-bold tracking-tight">{title}</h3>
           </div>
-          <p className="mt-2 text-sm leading-relaxed text-fg-2">{text}</p>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-fg-2">{text}</p>
         </div>
       </div>
     </motion.div>

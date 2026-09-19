@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { useRef } from "react";
 import clsx from "clsx";
-import { Container, Eyebrow, Reveal, SplitWords } from "../ui/primitives";
+import { Container, Reveal, SplitWords } from "../ui/primitives";
 import { BRL } from "../mock/atoms";
 import { OFFER } from "@/lib/data";
 
@@ -62,10 +62,7 @@ export function BeyondRevenue() {
 function Copy({ chips }: { chips: React.ReactNode }) {
   return (
     <div>
-      <Reveal>
-        <Eyebrow>Resultado por oferta</Eyebrow>
-      </Reveal>
-      <SplitWords text="Pare de olhar só para *faturamento." className="display mt-5 text-4xl sm:text-5xl lg:text-6xl" />
+      <SplitWords text="Pare de olhar só para *faturamento." className="display text-4xl sm:text-5xl lg:text-6xl" />
       <Reveal delay={0.1}>
         <p className="mt-6 max-w-md text-lg text-fg-2">
           Faturamento alto não significa operação saudável. Veja o que realmente importa em cada oferta:

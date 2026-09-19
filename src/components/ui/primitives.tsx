@@ -76,7 +76,11 @@ const wordVariants: Variants = {
 
 const MOTION_TAGS = { h1: motion.h1, h2: motion.h2, h3: motion.h3, p: motion.p } as const;
 
-/** Reveals text word by word. Prefix a word with * to color it red; use // for a line break. */
+/**
+ * Revela o texto palavra por palavra. Prefixe uma palavra com * para deixá-la
+ * vermelha; use // para quebrar a linha só no desktop e /// para quebrar em
+ * qualquer largura.
+ */
 export function SplitWords({
   text,
   className,
@@ -97,8 +101,8 @@ export function SplitWords({
       {words.map((w, i) => {
         const red = w.startsWith("*");
         const clean = w.replace(/\*/g, "");
-        const isBreak = clean === "//";
-        if (isBreak) return <br key={i} className="hidden sm:block" />;
+        if (clean === "///") return <br key={i} />;
+        if (clean === "//") return <br key={i} className="hidden sm:block" />;
         return (
           <span key={i} className="inline-block overflow-hidden pb-[0.08em] -mb-[0.08em] align-bottom">
             <motion.span
@@ -164,7 +168,10 @@ export function SectionHeader({
       )}
       <SplitWords
         text={title}
-        className="display mt-5 text-balance text-4xl sm:text-5xl lg:text-6xl min-[1921px]:text-7xl"
+        className={clsx(
+          "display text-balance text-4xl sm:text-5xl lg:text-6xl min-[1921px]:text-7xl",
+          eyebrow && "mt-5",
+        )}
       />
       {lead && (
         <Reveal delay={0.15}>
@@ -215,7 +222,7 @@ export function Button({
         "transition-transform duration-200 active:scale-[0.98]",
         text,
         variant === "primary" &&
-          "border-white/[0.08] bg-[linear-gradient(180deg,#1a1a1a_0%,#0a0a0a_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_4px_12px_rgba(0,0,0,0.35)]",
+          "border-red/60 bg-[linear-gradient(180deg,#8A060D_0%,#570004_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_10px_30px_-10px_rgba(212,5,16,0.75)]",
         variant === "ghost" &&
           "border-line-2 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] text-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]",
         variant === "white" && "border-black/10 bg-[linear-gradient(180deg,#ffffff_0%,#ededed_100%)] text-[#0a0a0a]",

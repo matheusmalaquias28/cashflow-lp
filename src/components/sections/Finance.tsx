@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { ArrowDownLeft, ArrowUpRight, Check, CalendarClock, Plus } from "lucide-react";
-import { Container, Eyebrow, Reveal, Section, SectionHeader, SplitWords } from "../ui/primitives";
+import { Container, Reveal, Section, SectionHeader, SplitWords } from "../ui/primitives";
 import { Pill, Window, BRL } from "../mock/atoms";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -88,7 +88,6 @@ export function Waterfall() {
     <Section id="financeiro" className="overflow-hidden">
       <Container>
         <SectionHeader
-          eyebrow="Financeiro"
           title="Faturamento *não *é *caixa."
           lead="O dinheiro que aparece no dashboard de vendas nem sempre é o dinheiro que chegou na sua conta. Gateways descontam taxas. Existem impostos. Existem despesas. Existe pró-labore. Existe o dinheiro que realmente saiu da empresa."
         />
@@ -227,10 +226,7 @@ export function Ledger() {
       <Container>
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
           <div>
-            <Reveal>
-              <Eyebrow>Caixa independente</Eyebrow>
-            </Reveal>
-            <SplitWords text="Saiba exatamente para onde seu dinheiro está *indo." className="display mt-5 text-4xl sm:text-5xl" />
+            <SplitWords text="Saiba exatamente para onde seu dinheiro está *indo." className="display text-4xl sm:text-5xl" />
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-md text-lg text-fg-2">Registre entradas e saídas da empresa em um caixa independente.</p>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-fg-3">
@@ -398,10 +394,7 @@ export function Commitments() {
           </Reveal>
 
           <div className="order-1 lg:order-2">
-            <Reveal>
-              <Eyebrow>Compromissos</Eyebrow>
-            </Reveal>
-            <SplitWords text="Não perca seus compromissos no meio da *operação." className="display mt-5 text-4xl sm:text-5xl" />
+            <SplitWords text="Não perca seus compromissos no meio da *operação." className="display text-4xl sm:text-5xl" />
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-md text-lg text-fg-2">
                 Centralize seus compromissos financeiros e tenha uma visão do que ainda precisa ser pago.

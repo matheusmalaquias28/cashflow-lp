@@ -1,9 +1,13 @@
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { Pillars } from "@/components/sections/Pillars";
+import { VideoDemo } from "@/components/sections/VideoDemo";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { Method } from "@/components/sections/Method";
 import { BeyondRevenue } from "@/components/sections/BeyondRevenue";
+import { BeforeAfter } from "@/components/sections/BeforeAfter";
 import { Compare } from "@/components/sections/Compare";
-import { OffersOverview, OfferConfig, MetaAds } from "@/components/sections/OffersSuite";
+import { OffersOverview, MetaAds } from "@/components/sections/OffersSuite";
 import { FinanceBlock } from "@/components/sections/Finance";
 import { Integrations } from "@/components/sections/Integrations";
 import { Manifesto, Pricing, Faq, FinalCta } from "@/components/sections/Closing";
@@ -17,13 +21,16 @@ export default function Page() {
       <Nav />
       <Hero />
       <Pillars />
+      <VideoDemo />
+      <Testimonials />
+      <Method />
       <BeyondRevenue />
+      <BeforeAfter />
+      <Integrations />
       <Compare />
       <OffersOverview />
-      <OfferConfig />
       <MetaAds />
       <FinanceBlock />
-      <Integrations />
       <Features />
       <Manifesto />
       <LampGlow />

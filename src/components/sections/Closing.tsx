@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { CheckCircle2, XCircle, ArrowUp, Plus, Sparkles, Gem, Flame, Crown, AtSign } from "lucide-react";
 import * as PricingCard from "../ui/pricing-card";
 import { InteractiveTiltCard } from "../ui/tilt-card";
-import { Button, Container, Eyebrow, Reveal, Section, SectionHeader, SplitWords } from "../ui/primitives";
+import { Button, Container, Reveal, Section, SectionHeader, SplitWords } from "../ui/primitives";
 
 import { track } from "../ui/MetaPixel";
 import { CTA_PRIMARY_HREF, FAQ, PLANS } from "@/lib/data";
@@ -24,9 +24,6 @@ export function Manifesto() {
     <Section className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_100%,rgba(131,0,6,.45),transparent_70%)]" />
       <Container className="text-center">
-        <Reveal>
-          <Eyebrow className="justify-center">Feito para quem leva a operação a sério</Eyebrow>
-        </Reveal>
         <Reveal delay={0.1}>
           <p className="mx-auto mt-8 max-w-3xl text-balance text-xl leading-relaxed text-fg-2 sm:text-2xl">
             O Cashflow nasceu dentro do ecossistema de Lowticket criado por{" "}
@@ -284,7 +281,7 @@ export function Pricing() {
         }}
       />
       <Container>
-        <SectionHeader eyebrow="Planos" title="Escolha o plano da sua *operação." lead="Membros fundadores têm condições especiais de entrada." />
+        <SectionHeader title="Escolha o plano da sua *operação." lead="Membros fundadores têm condições especiais de entrada." />
 
         <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {top.map((p, i) => (
@@ -314,10 +311,7 @@ export function Faq() {
     <Section id="faq" className="!pt-0">
       <Container className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
         <div>
-          <Reveal>
-            <Eyebrow>FAQ</Eyebrow>
-          </Reveal>
-          <SplitWords text="Perguntas *frequentes." className="display mt-5 text-4xl sm:text-5xl" />
+          <SplitWords text="Perguntas *frequentes." className="display text-4xl sm:text-5xl" />
           <Reveal delay={0.1}>
             <p className="mt-6 max-w-sm text-fg-2">O que quem está entrando agora costuma perguntar antes de virar membro fundador.</p>
           </Reveal>

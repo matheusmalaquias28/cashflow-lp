@@ -53,7 +53,6 @@ export function Integrations() {
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-line-2 to-transparent" />
       <Container>
         <SectionHeader
-          eyebrow="Integrações"
           title="Tudo conectado em *um *só *lugar."
           lead="Integre o Cashflow às principais plataformas utilizadas por operações de Lowticket. E conecte suas contas do Meta Ads para trazer os dados de tráfego para dentro da operação."
         />

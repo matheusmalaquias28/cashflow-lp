@@ -64,9 +64,9 @@ export function Hero() {
 
         <SplitWords
           as="h1"
-          text="Sua operação de Lowticket. // *Sob *controle."
+          text="1ª Ferramenta para *Gestão *de *Múltiplas *Ofertas *Low *Ticket com *Trackeamento *Avançado no MetaAds"
           delay={0.4}
-          className="display mt-6 max-w-5xl text-balance text-[40px] sm:mt-8 sm:text-6xl md:text-7xl lg:max-w-[clamp(23rem,calc(75.5vw-528px),35.5rem)] lg:text-[clamp(3.5rem,calc(11.875vw-85px),5.5rem)]"
+          className="display mt-6 max-w-5xl text-balance text-[24px] sm:mt-8 sm:text-4xl md:text-5xl lg:max-w-[clamp(23rem,calc(75.5vw-528px),35.5rem)] lg:text-[clamp(2.25rem,calc(7vw-50px),3.25rem)]"
         />
 
         <motion.p
@@ -86,8 +86,13 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
           className="mt-7 flex flex-col items-center justify-center gap-2 sm:mt-10 sm:flex-row sm:items-start sm:justify-start sm:gap-3"
         >
-          <Button href={CTA_PRIMARY_HREF} size="lg" event="ViewContent" eventParams={{ content_name: "hero_cta" }}>
-            Quero conhecer o Cashflow
+          <Button
+            href={CTA_PRIMARY_HREF}
+            size="lg"
+            event="ViewContent"
+            eventParams={{ content_name: "hero_cta" }}
+          >
+            Quero garantir meu acesso
           </Button>
           <a
             href="#produto"
