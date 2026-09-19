@@ -4,10 +4,10 @@ import { AnimatePresence, motion } from "motion/react";
 import { useRef, useState } from "react";
 import clsx from "clsx";
 import { SlidersHorizontal, GitCompare, Wallet, Bell, SunMoon, Sun, Moon, ArrowUpRight, Search, Filter } from "lucide-react";
-import { Container, Section, SectionHeader } from "../ui/primitives";
+import { Button, Container, Reveal, Section, SectionHeader } from "../ui/primitives";
 import { BentoCard, EASE, Rolling, useLiveBeat, useLiveInterval } from "../mock/bento";
 import { FilterChip, Label, Money, SelectBox, StatusPill } from "../mock/product";
-import { OFFER } from "@/lib/data";
+import { CTA_PRIMARY_HREF, OFFER } from "@/lib/data";
 
 /* =====================================================================
    Section
@@ -15,7 +15,7 @@ import { OFFER } from "@/lib/data";
 
 export function Features() {
   return (
-    <Section className="!pt-0">
+    <Section>
       <div className="pointer-events-none absolute inset-x-0 top-[18%] -z-10 h-[640px] bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(131,0,6,.34),transparent_72%)]" />
       <Container>
         <SectionHeader
@@ -81,6 +81,14 @@ export function Features() {
             <LiveTheme />
           </BentoCard>
         </div>
+
+        <Reveal delay={0.2}>
+          <div className="mt-12 flex justify-center">
+            <Button href={CTA_PRIMARY_HREF} size="lg" event="ViewContent" eventParams={{ content_name: "features_cta" }}>
+              QUERO GARANTIR MEU ACESSO
+            </Button>
+          </div>
+        </Reveal>
       </Container>
     </Section>
   );

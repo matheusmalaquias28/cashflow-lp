@@ -36,7 +36,6 @@ export type Plan = {
   id: "gold" | "diamond" | "ruby" | "master";
   name: string;
   tagline: string;
-  firstPrice: string;
   monthly: string;
   /** Vendas/mês incluídas — usado para mostrar o salto entre planos. */
   salesLimit: number;
@@ -55,32 +54,28 @@ export const PLANS: Plan[] = [
     id: "gold",
     name: "Gold",
     tagline: "Para começar a organizar sua operação.",
-    firstPrice: "87,30",
     monthly: "97",
     salesLimit: 1500,
     features: [
       "3 contas de anúncios",
       "3 Meta Pixels",
-      "1 operação",
       "Ofertas ilimitadas",
       "Webhooks ilimitados",
       "Tracking avançado",
     ],
     lockedFeatures: ["Suporte VIP"],
     extraSale: "R$ 0,10 por venda adicional",
-    href: env("NEXT_PUBLIC_CHECKOUT_GOLD") ?? "#",
+    href: env("NEXT_PUBLIC_CHECKOUT_GOLD") || "https://cashflow.mentoriaprocesso.com/assinatura?plano=gold",
   },
   {
     id: "diamond",
     name: "Diamond",
     tagline: "Para quem já opera múltiplas ofertas.",
-    firstPrice: "167,45",
     monthly: "197",
     salesLimit: 3000,
     features: [
       "10 contas de anúncios",
       "10 Meta Pixels",
-      "2 operações",
       "Ofertas ilimitadas",
       "Webhooks ilimitados",
       "Tracking avançado",
@@ -88,45 +83,41 @@ export const PLANS: Plan[] = [
     ],
     extraSale: "R$ 0,08 por venda adicional",
     highlight: true,
-    href: env("NEXT_PUBLIC_CHECKOUT_DIAMOND") ?? "#",
+    href: env("NEXT_PUBLIC_CHECKOUT_DIAMOND") || "https://cashflow.mentoriaprocesso.com/assinatura?plano=diamond",
   },
   {
     id: "ruby",
     name: "Ruby",
     tagline: "Para operações em escala.",
-    firstPrice: "237,60",
     monthly: "297",
     salesLimit: 5000,
     features: [
       "Contas de anúncios ilimitadas",
       "Meta Pixels ilimitados",
-      "5 operações",
       "Ofertas ilimitadas",
       "Webhooks ilimitados",
       "Tracking avançado",
       "Suporte VIP",
     ],
     extraSale: "R$ 0,05 por venda adicional",
-    href: env("NEXT_PUBLIC_CHECKOUT_RUBY") ?? "#",
+    href: env("NEXT_PUBLIC_CHECKOUT_RUBY") || "https://cashflow.mentoriaprocesso.com/assinatura?plano=ruby",
   },
   {
     id: "master",
     name: "Master",
     tagline: "Para operações maiores e múltiplas estruturas.",
-    firstPrice: "347,90",
     monthly: "497",
     salesLimit: 8000,
     features: [
       "Contas de anúncios ilimitadas",
       "Meta Pixels ilimitados",
-      "10 operações",
       "Ofertas ilimitadas",
       "Webhooks ilimitados",
       "Tracking avançado",
       "Suporte VIP",
     ],
     extraSale: "R$ 0,03 por venda adicional",
-    href: env("NEXT_PUBLIC_CHECKOUT_MASTER") ?? "#",
+    href: env("NEXT_PUBLIC_CHECKOUT_MASTER") || "https://cashflow.mentoriaprocesso.com/assinatura?plano=master",
   },
 ];
 
@@ -166,29 +157,88 @@ export const LOGOS: Record<string, string> = {
   Zouti: "zouti",
 };
 
-export const FAQ = [
+export const FAQ: { q: string; a: string[] }[] = [
   {
-    q: "O Cashflow substitui a planilha de controle da operação?",
-    a: "Sim. Vendas, tráfego, ofertas e financeiro entram em um só lugar, atualizados conforme acontecem. A planilha deixa de ser o centro da operação.",
+    q: "O que é a Cashflow?",
+    a: [
+      "A Cashflow é uma plataforma criada para quem trabalha com múltiplas ofertas low ticket e precisa acompanhar, em um só lugar, os dados de vendas, campanhas, tracking e resultado financeiro da operação.",
+      "Com ela, você consegue separar os números de cada oferta e identificar quanto cada uma investiu, vendeu, faturou e deixou de resultado.",
+    ],
   },
   {
-    q: "Quais plataformas de checkout são integradas?",
-    a: "Hotmart, Kiwify, Kirvano, Cakto, Wiapy, GGCheckout, Kavoo, Lastlink, Payt, Ticto, Hubla, Vega Checkout, Doppus, Greenn e Zouti, via webhook. Além disso, você conecta suas contas do Meta Ads para trazer os dados de tráfego.",
+    q: "Qual é o diferencial da Cashflow em relação a outras ferramentas de tracking?",
+    a: [
+      "A maioria das ferramentas concentra-se apenas em rastrear conversões ou exibir métricas de campanhas.",
+      "A Cashflow foi desenvolvida para conectar três áreas da operação:",
+      "1) gestão de múltiplas ofertas;\n2) tracking avançado e tráfego pago;\n3) gestão financeira empresarial.",
+      "Além de identificar a origem das vendas, você consegue visualizar o resultado individual de cada oferta e da empresa inteira.",
+      "Assim, você não vê apenas qual anúncio gerou uma compra, mas também quanto aquela oferta investiu, faturou e deixou de resultado.",
+    ],
   },
   {
-    q: "Quanto tempo leva para configurar?",
-    a: "Você cadastra a operação, conecta o webhook do seu checkout e a conta de anúncios. Em poucos minutos as vendas já começam a aparecer no dashboard.",
+    q: "A Cashflow serve para quem possui apenas uma oferta?",
+    a: [
+      "Sim. Você pode começar utilizando a Cashflow com apenas uma oferta e organizar sua operação desde o início.",
+      "Mas o maior diferencial da plataforma aparece quando você começa a empilhar produtos e precisa separar campanhas, vendas e resultados de várias ofertas sem depender de diferentes planilhas e dashboards.",
+      "Para iniciantes, ela ajuda a estruturar corretamente a operação. Para usuários mais avançados, facilita a separação, comparação e gestão de um portfólio maior de ofertas.",
+    ],
   },
   {
-    q: "O que acontece se eu passar do limite de vendas do plano?",
-    a: "Nada trava. Cada venda adicional é cobrada pelo valor indicado no seu plano (de R$ 0,03 a R$ 0,10) e você pode migrar de plano a qualquer momento.",
+    q: "Consigo acompanhar várias ofertas dentro da mesma conta?",
+    a: [
+      "Sim. Cada oferta pode ser cadastrada e vinculada às suas respectivas páginas, campanhas, UTMs, Pixel e API de Conversões.",
+      "Dessa forma, os resultados ficam organizados separadamente, enquanto você também mantém uma visão consolidada da operação inteira.",
+    ],
   },
   {
-    q: "O que é o preço de membro fundador?",
-    a: "Quem entra agora paga um primeiro pagamento com desconto e garante as condições especiais de entrada. Depois, o valor mensal do plano escolhido.",
+    q: "Quais plataformas de Checkout estão integradas no momento?",
+    a: [
+      "Hotmart, Kiwify, Kirvano, Cakto, Wiapy, GGCheckout, Kavoo, Lastlink, Payt, Ticto, Hubla, Vega Checkout, Doppus, Greenn e Zouti, via webhook. Além disso, você conecta suas contas do Meta Ads para trazer os dados de tráfego.",
+    ],
   },
   {
-    q: "Posso mudar de plano depois?",
-    a: "Sim. Você faz upgrade ou downgrade conforme sua operação cresce, sem perder histórico nem configurações.",
+    q: "Vou conseguir conferir se o tracking foi configurado corretamente?",
+    a: [
+      "Sim. A Cashflow possui uma área de configuração do rastreamento para você acompanhar as etapas necessárias e identificar possíveis pendências.",
+      "Você poderá verificar elementos como:",
+      "integração da plataforma de vendas;\nconexão com o Meta Ads;\noferta cadastrada;\nPixel vinculado;\nAPI de Conversões;\ninstalação do script;\nparâmetros UTM;\ncampanha vinculada à oferta.",
+      "Isso reduz a necessidade de configurar tudo sem saber se alguma etapa ficou faltando.",
+    ],
+  },
+  {
+    q: "Preciso continuar usando planilhas?",
+    a: [
+      "Não. Vendas, tráfego, ofertas e financeiro entram em um só lugar, atualizados conforme acontecem. A planilha deixa de ser o centro da operação.",
+    ],
+  },
+  {
+    q: "Posso acessar a Cashflow pelo celular?",
+    a: [
+      "Sim. A plataforma possui interface responsiva para que você possa acompanhar as principais informações da operação pelo computador, tablet ou celular.",
+      "Para configurações mais técnicas e análises detalhadas, a experiência em uma tela maior pode ser mais confortável.",
+    ],
+  },
+  {
+    q: "A Cashflow continua recebendo atualizações?",
+    a: [
+      "Sim. A Cashflow está em evolução contínua, com melhorias na experiência, no rastreamento, nas integrações e na gestão das ofertas.",
+      "As atualizações são desenvolvidas para tornar os dados mais confiáveis, a operação mais organizada e as decisões mais rápidas.",
+    ],
+  },
+  {
+    q: "Quanto tempo para configurar?",
+    a: [
+      "Você cadastra a operação, conecta o webhook do seu checkout e a conta de anúncios. Em poucos minutos as vendas já começam a aparecer no dashboard.",
+    ],
+  },
+  {
+    q: "O que acontece se eu passar do limite de vendas?",
+    a: [
+      "Nada trava. Cada venda adicional é cobrada pelo valor indicado no seu plano (de R$ 0,03 a R$ 0,10) e você pode migrar de plano a qualquer momento.",
+    ],
+  },
+  {
+    q: "Posso cancelar a qualquer momento?",
+    a: ["Sim, você pode cancelar a qualquer momento, sem dificuldades. Você não tem nenhuma fidelidade."],
   },
 ];

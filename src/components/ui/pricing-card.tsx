@@ -74,11 +74,11 @@ export function Price({ className, ...props }: ComponentProps<"div">) {
 }
 
 export function MainPrice({ className, ...props }: ComponentProps<"span">) {
-  return <span className={clsx("display text-4xl tabular", className)} {...props} />;
+  return <span className={clsx("display text-5xl leading-none tabular sm:text-6xl", className)} {...props} />;
 }
 
 export function Period({ className, ...props }: ComponentProps<"span">) {
-  return <span className={clsx("pb-1 text-xs text-fg-3", className)} {...props} />;
+  return <span className={clsx("pb-1 text-sm text-fg-3", className)} {...props} />;
 }
 
 /** Sits above the headline price, so the discount reads top-down. */

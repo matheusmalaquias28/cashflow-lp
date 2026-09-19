@@ -21,29 +21,23 @@ const PLAN_ICONS = { gold: Sparkles, diamond: Gem, ruby: Flame, master: Crown } 
 
 export function Manifesto() {
   return (
-    <Section className="relative overflow-hidden">
+    <Section className="relative overflow-hidden !pt-12 sm:!pt-16 lg:!pt-20">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_100%,rgba(131,0,6,.45),transparent_70%)]" />
       <Container className="text-center">
         <Reveal delay={0.1}>
-          <p className="mx-auto mt-8 max-w-3xl text-balance text-xl leading-relaxed text-fg-2 sm:text-2xl">
-            O Cashflow nasceu dentro do ecossistema de Lowticket criado por{" "}
-            <span className="text-fg">Heitor Nogueira</span>, autor de <span className="text-fg">O Processo</span>.
-          </p>
-        </Reveal>
-        <Reveal delay={0.2}>
-          <p className="mx-auto mt-6 max-w-2xl text-balance text-lg text-fg-3">
+          <p className="mx-auto max-w-2xl text-balance text-lg leading-relaxed text-fg-3 lg:max-w-3xl lg:text-2xl min-[1921px]:max-w-4xl min-[1921px]:text-3xl">
             Uma ferramenta construída para quem não quer apenas vender mais. Quer entender a operação, encontrar
             oportunidades e executar melhor.
           </p>
         </Reveal>
         <Reveal delay={0.25} amount={0.15}>
-          <div className="mx-auto mt-16 w-full max-w-4xl [perspective:1200px] min-[1921px]:max-w-[1200px]">
+          <div className="relative mx-auto mt-20 w-full max-w-4xl [perspective:1200px] min-[1921px]:max-w-[1200px]">
             <a
               href="https://www.instagram.com/heitornogueirama/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Abrir o Instagram de Heitor Nogueira em uma nova aba"
-              className="group relative block aspect-[16/10] w-full rounded-[20px] outline-none ring-red/50 focus-visible:ring-2"
+              className="group relative block aspect-[16/10] w-full overflow-visible rounded-[10px] outline-none ring-red/50 focus-visible:ring-2"
             >
               <div className="pointer-events-none absolute -inset-10 -z-10 rounded-[3rem] bg-red-deep/40 blur-[80px]" />
               <InteractiveTiltCard
@@ -61,7 +55,47 @@ export function Manifesto() {
                 @heitornogueirama
               </span>
             </a>
+            <a
+              href="https://www.instagram.com/heitornogueirama/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute left-3 top-0 z-20 -translate-y-1/2 overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0b] shadow-[0_12px_40px_-16px_rgba(0,0,0,.85)] outline-none ring-red/50 focus-visible:ring-2 sm:left-5"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/heitor/instagram-handle.png"
+                alt="Perfil de Heitor Nogueira no Instagram, @heitornogueirama"
+                className="h-auto w-[168px] object-cover sm:w-[210px] min-[1921px]:w-[240px]"
+              />
+            </a>
           </div>
+        </Reveal>
+
+        <SplitWords
+          text="Heitor Nogueira, criador da *Cashflow"
+          className="display mx-auto mt-12 max-w-3xl text-balance text-3xl sm:text-4xl lg:text-5xl min-[1921px]:text-6xl"
+        />
+        <Reveal delay={0.12}>
+          <blockquote className="mx-auto mt-6 max-w-[68ch] space-y-5 text-pretty text-left text-base leading-relaxed text-fg-2 sm:space-y-6 sm:text-lg min-[1921px]:text-xl">
+            <p>
+              Executor, a Cashflow nasceu dentro da minha própria operação, depois que cheguei a rodar mais de 50 ofertas
+              simultaneamente e construí uma operação com mais de R$ 100 mil de lucro/mês.
+            </p>
+            <p>
+              Conforme o volume aumentava, ficou cada vez mais difícil separar os resultados, confiar nas marcações do
+              Meta Ads e entender quanto cada oferta realmente estava deixando no caixa.
+            </p>
+            <p>
+              Eu cheguei a usar uma ferramenta conhecida do mercado, mas percebi que ela não resolvia o que eu
+              precisava. Existia um furo na operação: eu conseguia acompanhar algumas métricas, mas não tinha uma visão
+              completa das minhas ofertas, do tráfego e do financeiro.
+            </p>
+            <p>
+              Foi a partir dessa necessidade que criei a Cashflow. Ela não é apenas mais uma ferramenta ou um dashboard
+              com números. É uma metodologia própria de gestão, desenvolvida dentro de uma operação real, para mostrar
+              com clareza onde você está ganhando, onde está perdendo e onde precisa agir.
+            </p>
+          </blockquote>
         </Reveal>
 
         <SplitWords
@@ -146,7 +180,7 @@ function PlanButton({ p }: { p: Plan }) {
       onClick={() =>
         track("InitiateCheckout", {
           content_name: p.name,
-          value: Number(p.firstPrice.replace(",", ".")),
+          value: Number(p.monthly.replace(",", ".")),
           currency: "BRL",
         })
       }
@@ -192,15 +226,11 @@ function PlanCard({ p }: { p: Plan }) {
 
         <PricingCard.Description className="mb-4 min-h-[32px]">{p.tagline}</PricingCard.Description>
 
-        <PricingCard.OriginalPrice>R$ {p.monthly}</PricingCard.OriginalPrice>
-        <PricingCard.Price>
-          <span className="pb-1 font-mono text-sm text-fg-3">R$</span>
-          <PricingCard.MainPrice>{p.firstPrice}</PricingCard.MainPrice>
-          <PricingCard.Period>/1º pagamento</PricingCard.Period>
+        <PricingCard.Price className="mb-5">
+          <span className="pb-1 font-mono text-base text-fg-3">R$</span>
+          <PricingCard.MainPrice>{p.monthly}</PricingCard.MainPrice>
+          <PricingCard.Period>/mês</PricingCard.Period>
         </PricingCard.Price>
-        <PricingCard.Description className="mb-5">
-          depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
-        </PricingCard.Description>
 
         <PlanButton p={p} />
       </PricingCard.Header>
@@ -234,15 +264,11 @@ function MasterCard({ p }: { p: Plan }) {
 
           <PricingCard.Description className="mb-4 min-h-[32px]">{p.tagline}</PricingCard.Description>
 
-          <PricingCard.OriginalPrice>R$ {p.monthly}</PricingCard.OriginalPrice>
-          <PricingCard.Price>
-            <span className="pb-1 font-mono text-sm text-fg-3">R$</span>
-            <PricingCard.MainPrice>{p.firstPrice}</PricingCard.MainPrice>
-            <PricingCard.Period>/1º pagamento</PricingCard.Period>
+          <PricingCard.Price className="mb-5">
+            <span className="pb-1 font-mono text-base text-fg-3">R$</span>
+            <PricingCard.MainPrice>{p.monthly}</PricingCard.MainPrice>
+            <PricingCard.Period>/mês</PricingCard.Period>
           </PricingCard.Price>
-          <PricingCard.Description className="mb-5">
-            depois <span className="font-mono tabular text-fg">R$ {p.monthly}</span>/mês
-          </PricingCard.Description>
 
           <div className="mt-auto">
             <PlanButton p={p} />
@@ -281,7 +307,7 @@ export function Pricing() {
         }}
       />
       <Container>
-        <SectionHeader title="Escolha o plano da sua *operação." lead="Membros fundadores têm condições especiais de entrada." />
+        <SectionHeader title="Escolha o plano da sua *operação." lead="Escolha o plano que cabe na sua operação agora." />
 
         <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {top.map((p, i) => (
@@ -313,7 +339,7 @@ export function Faq() {
         <div>
           <SplitWords text="Perguntas *frequentes." className="display text-4xl sm:text-5xl" />
           <Reveal delay={0.1}>
-            <p className="mt-6 max-w-sm text-fg-2">O que quem está entrando agora costuma perguntar antes de virar membro fundador.</p>
+            <p className="mt-6 max-w-sm text-fg-2">O que quem está entrando agora costuma perguntar.</p>
           </Reveal>
         </div>
         <Reveal amount={0.1}>
@@ -341,7 +367,13 @@ export function Faq() {
                         transition={{ duration: 0.45, ease: EASE }}
                         className="overflow-hidden"
                       >
-                        <p className="px-6 pb-6 text-sm leading-relaxed text-fg-2">{f.a}</p>
+                        <div className="space-y-3 px-6 pb-6 text-sm leading-relaxed text-fg-2">
+                          {f.a.map((block) => (
+                            <p key={block} className="whitespace-pre-line">
+                              {block}
+                            </p>
+                          ))}
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -382,7 +414,6 @@ export function FinalCta() {
                 <Button href={CTA_PRIMARY_HREF} size="lg" event="ViewContent" eventParams={{ content_name: "final_cta" }}>
                   Quero começar agora
                 </Button>
-                <span className="text-sm text-fg-3">Membros fundadores têm condições especiais de entrada.</span>
               </div>
             </Reveal>
           </div>
