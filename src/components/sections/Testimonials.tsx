@@ -56,10 +56,9 @@ function TestimonialCard({ src, index }: { src: string; index: number }) {
   return (
     <figure
       className={clsx(
-        // 62vw deixa uma foto e meia à vista no telefone; em telas maiores o
-        // cartão para de crescer e aparecem mais.
-        "relative aspect-[3/4] w-[62vw] shrink-0 overflow-hidden rounded-2xl border border-[#0a0a0b]/10 bg-[#f4f4f5]",
-        "shadow-[0_18px_50px_-30px_rgba(10,10,11,.45)] sm:w-[38vw] lg:w-[26vw] lg:max-w-[300px]",
+        // 9:16 (prints de celular).
+        "relative aspect-[9/16] w-[78vw] shrink-0 overflow-hidden rounded-2xl border border-[#0a0a0b]/10 bg-[#f4f4f5]",
+        "shadow-[0_18px_50px_-30px_rgba(10,10,11,.45)] sm:w-[34vw] lg:w-[22vw] lg:max-w-[340px]",
       )}
     >
       {ok ? (

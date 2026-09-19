@@ -15,7 +15,7 @@ import { CTA_PRIMARY_HREF, OFFER } from "@/lib/data";
 
 export function Features() {
   return (
-    <Section>
+    <Section className="!pt-[176px] sm:!pt-32 lg:!pt-40">
       <div className="pointer-events-none absolute inset-x-0 top-[18%] -z-10 h-[640px] bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(131,0,6,.34),transparent_72%)]" />
       <Container>
         <SectionHeader

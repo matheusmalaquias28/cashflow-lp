@@ -71,6 +71,15 @@ export function Manifesto() {
           </div>
         </Reveal>
 
+        <Reveal delay={0.3}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/heitor/mentorados.jpg"
+            alt="Mentorados de Heitor Nogueira"
+            className="mx-auto mt-8 w-full max-w-4xl rounded-[20px] object-cover min-[1921px]:max-w-[1200px]"
+          />
+        </Reveal>
+
         <SplitWords
           text="Heitor Nogueira, criador da *Cashflow"
           className="display mx-auto mt-12 max-w-3xl text-balance text-3xl sm:text-4xl lg:text-5xl min-[1921px]:text-6xl"
@@ -97,12 +106,6 @@ export function Manifesto() {
             </p>
           </blockquote>
         </Reveal>
-
-        <SplitWords
-          as="p"
-          text="É só *fazer."
-          className="display mt-16 text-6xl sm:text-8xl lg:text-[9rem]"
-        />
       </Container>
     </Section>
   );

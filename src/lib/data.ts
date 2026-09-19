@@ -5,14 +5,21 @@ export const CTA_PRIMARY_HREF = "#planos";
  * não existirem, o componente mostra um avatar neutro de placeholder.
  * Só troque o texto por uma recomendação quando ela for real.
  */
-/** Fotos dos depoimentos — solte os arquivos em /public/depoimentos. */
+/** Fotos dos depoimentos — arquivos em /public/depoimentos. */
 export const TESTIMONIALS = [
-  "/depoimentos/1.jpg",
-  "/depoimentos/2.jpg",
-  "/depoimentos/3.jpg",
-  "/depoimentos/4.jpg",
-  "/depoimentos/5.jpg",
-  "/depoimentos/6.jpg",
+  "/depoimentos/depoimento-1.jpg",
+  "/depoimentos/depoimento-2.jpg",
+  "/depoimentos/depoimento-3.jpg",
+  "/depoimentos/depoimento-5.jpg",
+  "/depoimentos/depoimento-6.jpg",
+  "/depoimentos/depoimento-7.jpg",
+  "/depoimentos/depoimento-8.jpg",
+  "/depoimentos/depoimento-9.jpg",
+  "/depoimentos/depoimento-10.jpg",
+  "/depoimentos/depoimento-11.jpg",
+  "/depoimentos/depoimento-12.jpg",
+  "/depoimentos/depoimento-13.jpg",
+  "/depoimentos/depoimento-14.jpg",
 ];
 
 export const SOCIAL_PROOF = {

@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Button, Container, Eyebrow, Logo, SocialProof, SplitWords } from "../ui/primitives";
-import { CTA_PRIMARY_HREF, INTEGRATIONS, SOCIAL_PROOF } from "@/lib/data";
-import { BrandMark } from "./Integrations";
+import { Button, Logo, SplitWords } from "../ui/primitives";
+import { CTA_PRIMARY_HREF } from "@/lib/data";
 import { Velaris } from "../ui/velaris";
 
 export function Hero() {
@@ -54,14 +53,6 @@ export function Hero() {
         {/* Logo no topo da hero — só no mobile (o nav fixo fica oculto) */}
         <Logo className="mx-auto mb-7 h-7 sm:hidden" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          <SocialProof text={SOCIAL_PROOF.text} avatars={SOCIAL_PROOF.avatars} align="left" />
-        </motion.div>
-
         <SplitWords
           as="h1"
           text="1ª Ferramenta para *Gestão *de *Múltiplas *Ofertas *Low *Ticket com *Trackeamento *Avançado no MetaAds"
@@ -105,24 +96,6 @@ export function Hero() {
 
         {/* Espaço inferior no mobile — deixa o vídeo de fundo aparecer */}
         <div className="flex-1 sm:hidden" />
-      </div>
-
-      {/* Integrations marquee — abaixo da hero no mobile (invade levemente o vídeo) */}
-      <div className="relative z-10 -mt-24 sm:mt-28">
-        <Container>
-          <Eyebrow dot={false} className="mx-auto max-w-xs text-center sm:max-w-none">
-            Integrado às plataformas que sua operação já usa
-          </Eyebrow>
-        </Container>
-        <div className="mt-6 overflow-hidden mask-fade-x">
-          <div className="flex w-max animate-marquee gap-10 pr-10">
-            {[...INTEGRATIONS, "Meta Ads", ...INTEGRATIONS, "Meta Ads"].map((n, i) => (
-              <div key={i} className="flex h-12 items-center">
-                <BrandMark name={n} />
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );

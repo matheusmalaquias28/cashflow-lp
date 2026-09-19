@@ -4,7 +4,6 @@ import { Pillars } from "@/components/sections/Pillars";
 import { VideoDemo } from "@/components/sections/VideoDemo";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Method } from "@/components/sections/Method";
-import { BeyondRevenue } from "@/components/sections/BeyondRevenue";
 import { BeforeAfter } from "@/components/sections/BeforeAfter";
 import { Compare } from "@/components/sections/Compare";
 import { OffersOverview, MetaAds } from "@/components/sections/OffersSuite";
@@ -24,7 +23,6 @@ export default function Page() {
       <VideoDemo />
       <Testimonials />
       <Method />
-      <BeyondRevenue />
       <BeforeAfter />
       <Integrations />
       <Compare />
