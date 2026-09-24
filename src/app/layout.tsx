@@ -35,8 +35,19 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "Cashflow",
+    images: [
+      {
+        url: "/og.png",
+        width: 1024,
+        height: 576,
+        alt: "Dashboard da Cashflow no notebook, com a operação de low ticket sob controle",
+      },
+    ],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og.png"],
+  },
   icons: { icon: "/brand/logo-icon.svg" },
 };
 
