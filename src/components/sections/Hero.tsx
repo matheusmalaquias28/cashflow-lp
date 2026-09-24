@@ -66,9 +66,9 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
           className="mt-5 max-w-2xl text-balance text-sm leading-relaxed text-fg-2 sm:mt-7 sm:max-w-sm sm:text-lg md:max-w-md md:text-xl lg:max-w-[clamp(22rem,calc(75.5vw-540px),35rem)]"
         >
-          <span className="text-fg">Vendas, tráfego, ofertas e financeiro em um único lugar.</span> Tenha uma visão
-          clara do que está acontecendo em cada oferta e tome decisões com dados reais, sem depender de
-          planilhas.
+          <span className="text-fg">Mais lucro, estabilidade e controle da sua operação.</span> Saiba quais ofertas
+          dão resultado e tenha mais confiança nos dados para decidir o que escalar, ajustar ou pausar — tudo em um
+          só lugar com poucos cliques.
         </motion.p>
 
         <motion.div
