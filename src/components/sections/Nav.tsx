@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { useMotionValueEvent, useScroll } from "motion/react";
 import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
@@ -21,10 +21,7 @@ export function Nav() {
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 40));
 
   return (
-    <motion.header
-      initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+    <header
       className={clsx(
         "fixed inset-x-0 top-0 z-50 hidden border-b transition-colors duration-500 ease-out-expo sm:block",
         scrolled
@@ -52,6 +49,6 @@ export function Nav() {
 
         <StatsBar className="ml-auto hidden md:flex" />
       </div>
-    </motion.header>
+    </header>
   );
 }

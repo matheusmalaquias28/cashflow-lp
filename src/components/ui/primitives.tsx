@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, useInView, type Variants } from "motion/react";
-import { useRef, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import clsx from "clsx";
 import { User } from "lucide-react";
 import Image from "next/image";
@@ -32,17 +31,16 @@ export function Section({
   );
 }
 
-/* ---------- Motion ---------- */
+/* ---------- Text blocks ---------- */
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
+/**
+ * Antes animava a entrada (fade/blur/slide). As animacoes de entrada foram
+ * removidas porque bugavam em alguns dispositivos; agora apenas renderiza o
+ * conteudo. As props de animacao continuam aceitas para nao quebrar as chamadas.
+ */
 export function Reveal({
   children,
-  delay = 0,
-  y = 28,
   className,
-  once = true,
-  amount = 0.3,
 }: {
   children: ReactNode;
   delay?: number;
@@ -51,30 +49,8 @@ export function Reveal({
   once?: boolean;
   amount?: number;
 }) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once, amount }}
-      transition={{ duration: 0.9, delay, ease: EASE }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={className}>{children}</div>;
 }
-
-const wordVariants: Variants = {
-  hidden: { y: "110%", opacity: 0, rotateX: -40 },
-  show: (i: number) => ({
-    y: "0%",
-    opacity: 1,
-    rotateX: 0,
-    transition: { duration: 0.9, delay: 0.05 * i, ease: EASE },
-  }),
-};
-
-const MOTION_TAGS = { h1: motion.h1, h2: motion.h2, h3: motion.h3, p: motion.p } as const;
 
 /**
  * Revela o texto palavra por palavra. Prefixe uma palavra com * para deixá-la
@@ -84,7 +60,6 @@ const MOTION_TAGS = { h1: motion.h1, h2: motion.h2, h3: motion.h3, p: motion.p }
 export function SplitWords({
   text,
   className,
-  delay = 0,
   as: Tag = "h2",
 }: {
   text: string;
@@ -92,33 +67,28 @@ export function SplitWords({
   delay?: number;
   as?: "h1" | "h2" | "h3" | "p";
 }) {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.5 });
   const words = text.split(" ");
-  const MotionTag = MOTION_TAGS[Tag];
   return (
-    <MotionTag ref={ref as never} className={clsx("[perspective:800px]", className)} aria-label={text}>
+    <Tag className={className}>
       {words.map((w, i) => {
         const red = w.startsWith("*");
         const clean = w.replace(/\*/g, "");
         if (clean === "///") return <br key={i} />;
         if (clean === "//") return <br key={i} className="hidden sm:block" />;
-        return (
-          <span key={i} className="inline-block overflow-hidden pb-[0.08em] -mb-[0.08em] align-bottom">
-            <motion.span
-              className={clsx("inline-block will-change-transform", red && "text-red")}
-              custom={i + delay * 10}
-              variants={wordVariants}
-              initial="hidden"
-              animate={inView ? "show" : "hidden"}
-            >
-              {clean}
-              {i < words.length - 1 ? " " : ""}
-            </motion.span>
+        const space = i < words.length - 1 ? " " : "";
+        return red ? (
+          <span key={i} className="text-red">
+            {clean}
+            {space}
+          </span>
+        ) : (
+          <span key={i}>
+            {clean}
+            {space}
           </span>
         );
       })}
-    </MotionTag>
+    </Tag>
   );
 }
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { Button, Logo, SplitWords } from "../ui/primitives";
 import { CTA_PRIMARY_HREF } from "@/lib/data";
 import { Velaris } from "../ui/velaris";
@@ -60,21 +59,15 @@ export function Hero() {
           className="display mt-6 max-w-5xl text-balance text-[24px] sm:mt-8 sm:text-4xl md:text-5xl lg:max-w-[clamp(23rem,calc(75.5vw-528px),35.5rem)] lg:text-[clamp(2.25rem,calc(7vw-50px),3.25rem)]"
         />
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
+        <p
           className="mt-5 max-w-2xl text-balance text-sm leading-relaxed text-fg-2 sm:mt-7 sm:max-w-sm sm:text-lg md:max-w-md md:text-xl lg:max-w-[clamp(22rem,calc(75.5vw-540px),35rem)]"
         >
           <span className="text-fg">Mais lucro, estabilidade e controle da sua operação.</span> Saiba quais ofertas
           dão resultado e tenha mais confiança nos dados para decidir o que escalar, ajustar ou pausar — tudo em um
           só lugar com poucos cliques.
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
+        <div
           className="mt-7 flex flex-col items-center justify-center gap-2 sm:mt-10 sm:flex-row sm:items-start sm:justify-start sm:gap-3"
         >
           <Button
@@ -91,7 +84,7 @@ export function Hero() {
           >
             Ver como funciona
           </a>
-        </motion.div>
+        </div>
         </div>
 
         {/* Espaço inferior no mobile — deixa o vídeo de fundo aparecer */}

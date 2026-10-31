@@ -6,12 +6,9 @@
  */
 
 import clsx from "clsx";
-import { motion } from "motion/react";
 import { Check, X } from "lucide-react";
 import { Button, Container, Reveal, Section, SplitWords } from "../ui/primitives";
 import { CTA_PRIMARY_HREF } from "@/lib/data";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
 
 const BEFORE = [
   "A venda aparece no checkout, mas não está atribuída corretamente no Meta e você não tem confiança para tomar decisão.",
@@ -121,14 +118,10 @@ function ComparisonColumn({
         </div>
 
         <ul className="relative mt-5 flex flex-1 flex-col gap-3.5">
-          {items.map((t, i) => (
-            <motion.li
+          {items.map((t) => (
+            <li
               key={t}
               className="flex gap-3"
-              initial={{ opacity: 0, x: after ? 14 : -14 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.55, delay: 0.06 * i, ease: EASE }}
             >
               <span
                 className={clsx(
@@ -139,7 +132,7 @@ function ComparisonColumn({
                 <Icon className="h-3 w-3" strokeWidth={3} />
               </span>
               <span className={clsx("text-sm leading-relaxed sm:text-[15px]", after ? "text-fg" : "text-fg-2")}>{t}</span>
-            </motion.li>
+            </li>
           ))}
         </ul>
       </div>

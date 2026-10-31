@@ -99,13 +99,9 @@ export function Method() {
               </div>
 
               <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-                {RESULT.map((r, i) => (
-                  <motion.div
+                {RESULT.map((r) => (
+                  <div
                     key={r.label}
-                    initial={{ opacity: 0, y: 14 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.4 }}
-                    transition={{ duration: 0.6, delay: 0.12 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                     className={clsx(
                       "rounded-2xl border px-3 py-4 text-center sm:px-4",
                       r.tone === "green"
@@ -122,7 +118,7 @@ export function Method() {
                     >
                       {r.value}
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
