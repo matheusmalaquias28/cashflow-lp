@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { motion } from "motion/react";
+import { motion } from "@/lib/static-motion";
 import { Layers, MousePointerClick, Radar, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Container, Reveal, Section, SplitWords } from "../ui/primitives";

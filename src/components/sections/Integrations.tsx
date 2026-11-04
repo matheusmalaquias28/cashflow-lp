@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "motion/react";
+import { motion, useMotionValue, useSpring } from "@/lib/static-motion";
 import { useRef } from "react";
 import clsx from "clsx";
 import { Container, Reveal, Section, SectionHeader } from "../ui/primitives";
@@ -210,7 +210,7 @@ function Tile({ name, index }: { name: string; index: number }) {
       <motion.div
         ref={ref}
         style={{ x, y }}
-        onMouseMove={(e) => {
+        onMouseMove={(e: React.MouseEvent) => {
           const r = ref.current!.getBoundingClientRect();
           mx.set(((e.clientX - r.left) / r.width - 0.5) * 10);
           my.set(((e.clientY - r.top) / r.height - 0.5) * 10);

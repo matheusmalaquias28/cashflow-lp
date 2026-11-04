@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "@/lib/static-motion";
 import { useEffect, useState } from "react";
 import { Download, LayoutGrid, RefreshCw, HelpCircle, Filter, TrendingUp, TrendingDown, BarChart3, Target, DollarSign, Radio, ArrowUpRight, Menu, Search, Bell, Clock, Eye, Type, Landmark, Package, MoreHorizontal, Trophy } from "lucide-react";
 import clsx from "clsx";

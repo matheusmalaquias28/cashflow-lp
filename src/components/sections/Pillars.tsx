@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion } from "@/lib/static-motion";
 import { useRef, useState } from "react";
 import clsx from "clsx";
 import { Layers, Wallet, ArrowUpRight, TrendingUp, Activity, Radar, Megaphone } from "lucide-react";

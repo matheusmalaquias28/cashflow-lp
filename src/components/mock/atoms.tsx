@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useInView, useMotionValue, useTransform } from "motion/react";
+import { animate, motion, useInView, useMotionValue, useTransform } from "@/lib/static-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 

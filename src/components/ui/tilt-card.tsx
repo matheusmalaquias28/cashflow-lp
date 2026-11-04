@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "@/lib/static-motion";
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import clsx from "clsx";
 import { useImageOk } from "@/lib/use-image-ok";
@@ -97,6 +97,8 @@ export function InteractiveTiltCard({
             alt={image.alt}
             className="relative z-[1] h-full w-full object-cover"
             draggable={false}
+            loading="lazy"
+            decoding="async"
           />
         ) : (
           <div className="relative z-[1] h-full w-full">{fallback}</div>

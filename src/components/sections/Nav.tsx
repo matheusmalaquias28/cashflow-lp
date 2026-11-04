@@ -1,6 +1,6 @@
 "use client";
 
-import { useMotionValueEvent, useScroll } from "motion/react";
+import { useMotionValueEvent, useScroll } from "@/lib/static-motion";
 import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";

@@ -5,7 +5,7 @@
  * hora e as últimas vendas chegando. Vive na segunda seção da página.
  */
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "@/lib/static-motion";
 import { useRef, useState } from "react";
 import clsx from "clsx";
 import { Activity, Zap, Clock, DollarSign, BarChart3, Trophy, RefreshCw, Eye, Volume2 } from "lucide-react";

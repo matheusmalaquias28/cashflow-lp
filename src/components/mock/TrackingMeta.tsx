@@ -6,7 +6,7 @@
  * Todos os números são de uma operação fictícia de demonstração.
  */
 
-import { motion, useInView } from "motion/react";
+import { motion, useInView } from "@/lib/static-motion";
 import { useRef } from "react";
 import clsx from "clsx";
 import { Radar } from "lucide-react";

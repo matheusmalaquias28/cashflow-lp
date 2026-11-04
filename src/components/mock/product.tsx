@@ -6,7 +6,7 @@
  * vendas, gráficos). Todos os dados que passam por aqui são fictícios.
  */
 
-import { motion, useInView } from "motion/react";
+import { motion, useInView } from "@/lib/static-motion";
 import { useRef, type ReactNode } from "react";
 import clsx from "clsx";
 import {

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "motion/react";
+import { AnimatePresence, motion, useInView } from "@/lib/static-motion";
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { ArrowDownLeft, ArrowUpRight, Check, CalendarClock, Plus } from "lucide-react";

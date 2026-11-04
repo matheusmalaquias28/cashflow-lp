@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion } from "@/lib/static-motion";
 import clsx from "clsx";
 
 /**

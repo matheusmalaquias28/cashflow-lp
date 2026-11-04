@@ -1,49 +1,51 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Button, Logo, SplitWords } from "../ui/primitives";
 import { CTA_PRIMARY_HREF } from "@/lib/data";
 import { Velaris } from "../ui/velaris";
 
 export function Hero() {
+  // O vídeo de fundo só monta no desktop: no mobile ele foi removido (peso de
+  // ~1MB) e nem é baixado, o que melhora bastante a performance.
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    setIsDesktop(window.matchMedia("(min-width: 640px)").matches);
+  }, []);
+
   return (
     <section className="relative overflow-hidden">
-      {/* Hero — 100vh no mobile, conteúdo no topo e vídeo na parte inferior */}
-      <div className="relative flex min-h-[120svh] flex-col overflow-hidden pt-[15px] sm:block sm:min-h-0 sm:pt-40 min-[1921px]:flex! min-[1921px]:min-h-screen! min-[1921px]:flex-col! min-[1921px]:justify-center! min-[1921px]:pt-0!">
+      <div className="relative overflow-hidden pt-[15px] pb-16 sm:block sm:pb-0 sm:pt-40 min-[1921px]:flex! min-[1921px]:min-h-screen! min-[1921px]:flex-col! min-[1921px]:justify-center! min-[1921px]:pt-0!">
       {/* Backdrop */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        {/* Cor de fundo atrás do vídeo (mobile #020101, desktop #020300) */}
+        {/* Cor de fundo (mobile #020101, desktop #020300) */}
         <div className="absolute inset-0 bg-[#020101] sm:bg-[#020300]" />
-        <Velaris
-          height="100%"
-          bg="#130505"
-          colors={["#1c0002", "#5c0004", "#090001", "#130505"]}
-          speed={0.55}
-          grain={0.18}
-          className="absolute inset-x-0 top-0 hidden h-[105vh] opacity-70 sm:block [mask-image:radial-gradient(120%_85%_at_50%_10%,black_0%,black_35%,transparent_78%)]"
-        />
+        {/* Velaris é WebGL (loop de render); só monta no desktop para não
+            consumir a main thread do mobile, onde já ficava oculto. */}
+        {isDesktop && (
+          <Velaris
+            height="100%"
+            bg="#130505"
+            colors={["#1c0002", "#5c0004", "#090001", "#130505"]}
+            speed={0.55}
+            grain={0.18}
+            className="absolute inset-x-0 top-0 hidden h-[105vh] opacity-70 sm:block [mask-image:radial-gradient(120%_85%_at_50%_10%,black_0%,black_35%,transparent_78%)]"
+          />
+        )}
         <div className="absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]" />
-        {/* Vídeo mobile — fundo (retrato), ancorado à parte inferior da hero */}
-        <video
-          className="absolute inset-0 h-full w-full object-contain object-bottom sm:hidden"
-          src="/video/bg-video-mobile-cash.mp4"
-          poster="/video/poster-mobile.webp"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-        />
-        {/* Vídeo desktop */}
-        <video
-          className="absolute inset-y-0 right-0 hidden h-full w-full bg-[#020300] object-contain object-right [clip-path:inset(0_4px)] sm:block"
-          src="/video/video-bg-desktop-cashflow.mp4"
-          poster="/video/poster-desktop.webp"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-        />
+        {/* Vídeo desktop — montado só no desktop para não baixar no mobile */}
+        {isDesktop && (
+          <video
+            className="absolute inset-y-0 right-0 hidden h-full w-full bg-[#020300] object-contain object-right [clip-path:inset(0_4px)] sm:block"
+            src="/video/video-bg-desktop-cashflow.mp4"
+            poster="/video/poster-desktop.webp"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+          />
+        )}
         {/* Mescla a borda esquerda do vídeo com o fundo preto da hero (desktop) */}
         <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-[#020300] via-[#020300]/80 to-transparent lg:block" />
       </div>
@@ -86,9 +88,6 @@ export function Hero() {
           </a>
         </div>
         </div>
-
-        {/* Espaço inferior no mobile — deixa o vídeo de fundo aparecer */}
-        <div className="flex-1 sm:hidden" />
       </div>
     </section>
   );

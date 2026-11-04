@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "@/lib/static-motion";
 import { useRef, useState } from "react";
 import clsx from "clsx";
 import { SlidersHorizontal, GitCompare, Wallet, Bell, SunMoon, Sun, Moon, ArrowUpRight, Search, Filter } from "lucide-react";

@@ -16,7 +16,7 @@ import {
   useSpring,
   useTransform,
   type MotionValue,
-} from "motion/react";
+} from "@/lib/static-motion";
 import { useRef, type ReactNode } from "react";
 import clsx from "clsx";
 import { ArrowUp } from "lucide-react";

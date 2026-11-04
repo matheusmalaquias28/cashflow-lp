@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "@/lib/static-motion";
 import { useState } from "react";
 import clsx from "clsx";
 import { CheckCircle2, XCircle, ArrowUp, Plus, Sparkles, Gem, Flame, Crown, AtSign } from "lucide-react";
@@ -66,6 +66,8 @@ export function Manifesto() {
                 src="/heitor/instagram-handle.png"
                 alt="Perfil de Heitor Nogueira no Instagram, @heitornogueirama"
                 className="h-auto w-[168px] object-cover sm:w-[210px] min-[1921px]:w-[240px]"
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </div>
@@ -77,6 +79,8 @@ export function Manifesto() {
             src="/heitor/mentorados.jpg"
             alt="Mentorados de Heitor Nogueira"
             className="mx-auto mt-8 w-full max-w-4xl rounded-[20px] object-cover min-[1921px]:max-w-[1200px]"
+            loading="lazy"
+            decoding="async"
           />
         </Reveal>
 

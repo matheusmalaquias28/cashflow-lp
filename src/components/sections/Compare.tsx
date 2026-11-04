@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
+import { motion, useInView } from "@/lib/static-motion";
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { ArrowLeftRight, BarChart3, GitCompare, Trophy, Bookmark } from "lucide-react";

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "motion/react";
+import { AnimatePresence, motion, useInView } from "@/lib/static-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { Zap, Plus, Search, Filter, LayoutGrid, List, ChevronUp, HelpCircle, Building2, Megaphone, Layers, Image as ImageIcon, History, Pencil } from "lucide-react";

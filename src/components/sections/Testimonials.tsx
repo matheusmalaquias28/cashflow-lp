@@ -63,7 +63,7 @@ function TestimonialCard({ src, index }: { src: string; index: number }) {
     >
       {ok ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="" className="h-full w-full object-cover" draggable={false} />
+        <img src={src} alt="" className="h-full w-full object-cover" draggable={false} loading="lazy" decoding="async" />
       ) : (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-fg-3">
           <Quote className="h-8 w-8 opacity-40" />

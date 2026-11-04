@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "@/lib/static-motion";
 import clsx from "clsx";
 
 const ENDPOINT =
@@ -69,6 +69,10 @@ export function StatsBar({ className }: { className?: string }) {
   const prevSales = useRef<number | null>(null);
 
   useEffect(() => {
+    // A barra só aparece no desktop (hidden md:flex); não busca no mobile para
+    // não disputar banda com o conteúdo da primeira dobra.
+    if (!window.matchMedia("(min-width: 768px)").matches) return;
+
     let alive = true;
     const controller = new AbortController();
 

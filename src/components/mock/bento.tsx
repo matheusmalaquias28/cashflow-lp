@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useReducedMotion,
   useSpring,
-} from "motion/react";
+} from "@/lib/static-motion";
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { BRL } from "./atoms";

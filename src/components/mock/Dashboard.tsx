@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "@/lib/static-motion";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard,

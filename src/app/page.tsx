@@ -13,10 +13,12 @@ import { Manifesto, Pricing, Faq, FinalCta } from "@/components/sections/Closing
 import { Features } from "@/components/sections/Features";
 import { LampGlow } from "@/components/ui/lamp";
 import { CinematicFooter } from "@/components/ui/motion-footer";
+import { MobileToPlans } from "@/components/ui/MobileToPlans";
 
 export default function Page() {
   return (
     <main className="relative">
+      <MobileToPlans />
       <Nav />
       <Hero />
       <Pillars />
